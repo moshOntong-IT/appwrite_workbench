@@ -1,3 +1,7 @@
+import 'package:appwrite_workbench/core/appwrite_client.dart';
+import 'package:appwrite_workbench/core/provider_scope_extension.dart';
+import 'package:appwrite_workbench/features/functions/presentation/create_function_dialog.dart';
+import 'package:appwrite_workbench/global_providars.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -34,8 +38,49 @@ class FunctionsHeadbarWidget extends ConsumerWidget {
               ),
             ),
           ),
+          const Positioned(
+            bottom: 20,
+            right: 20,
+            child: _Actions(),
+          )
         ],
       ),
+    );
+  }
+}
+
+class _Actions extends ConsumerWidget {
+  const _Actions();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const Row(
+      children: [
+        _CreateFunction(),
+      ],
+    );
+  }
+}
+
+class _CreateFunction extends ConsumerWidget {
+  const _CreateFunction();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appwriteClient = ref.watch(appwriteClientProvider);
+    return ShadButton(
+      icon: const Icon(
+        LucideIcons.plus,
+      ),
+      text: const Text('Create Function'),
+      onPressed: () {
+        showShadDialog(
+          context: context,
+          builder: (context) => CreateFunctionDialog(
+            client: appwriteClient,
+          ),
+        );
+      },
     );
   }
 }

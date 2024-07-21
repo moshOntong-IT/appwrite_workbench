@@ -96,6 +96,8 @@ ProjectApi _projectApiDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = ProjectApi();
+  object.createdAt = reader.readDateTime(offsets[0]);
+  object.updatedAt = reader.readDateTime(offsets[1]);
   object.endpoint = reader.readString(offsets[2]);
   object.id = id;
   object.name = reader.readString(offsets[3]);
@@ -1182,6 +1184,8 @@ ProjectJson _projectJsonDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = ProjectJson();
+  object.createdAt = reader.readDateTime(offsets[0]);
+  object.updatedAt = reader.readDateTime(offsets[1]);
   object.id = id;
   object.name = reader.readString(offsets[2]);
   object.path = reader.readString(offsets[3]);

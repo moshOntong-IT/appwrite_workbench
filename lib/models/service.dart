@@ -7,8 +7,8 @@ class ServiceWorkbench {
   Id id = Isar.autoIncrement;
 
   @Name(r'$createdAt')
-  final DateTime createdAt;
+  DateTime createdAt;
 
   @Name(r'$updatedAt')
-  final DateTime updatedAt;
+  DateTime updatedAt;
 }

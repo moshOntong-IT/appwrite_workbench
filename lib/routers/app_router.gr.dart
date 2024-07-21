@@ -51,10 +51,11 @@ abstract class _$AppRouter extends RootStackRouter {
       final args = routeData.argsAs<ProjectRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: ProjectScreen(
+        child: WrappedRoute(
+            child: ProjectScreen(
           project: args.project,
           key: args.key,
-        ),
+        )),
       );
     },
     ProjectsRoute.name: (routeData) {

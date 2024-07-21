@@ -122,26 +122,31 @@ class LocalStorageService {
     }
   }
 
-  Future<void> getKey({required String projectId}) async {
+  String getKey({required String projectId}) {
     _logger.info('Getting key for project: $projectId');
     assert(secretBox != null, 'Secret box is not initialized');
     if (secretBox != null) {
       _logger.info('Getting key from secret box');
-      return secretBox!.get(projectId);
+      return secretBox!.get(projectId) as String;
     } else {
       _logger.severe('Secret box is not initialized');
+      throw AppwriteWorkbenchException(
+        message: 'Secret box is not initialized',
+        code: AppwriteWorkbenchExceptionCode.notFound,
+        stackTrace: StackTrace.current,
+      );
     }
   }
 
-  Future<List<Variable>> getVars({
+  List<Variable> getVars({
     required String projectId,
     required String functionId,
-  }) async {
+  }) {
     _logger.info('Getting vars for project: $projectId');
     assert(secretBox != null, 'Secret box is not initialized');
     if (secretBox != null) {
       _logger.info('Getting vars from secret box');
-      final vars = await secretBox!.get('$projectId-$functionId-vars');
+      final vars = secretBox!.get('$projectId-$functionId-vars');
       _logger.finest('Vars: $vars');
       final varsConverted = (vars as List<dynamic>?)
           ?.map((e) => Variable.fromMap(e as Map<String, dynamic>))

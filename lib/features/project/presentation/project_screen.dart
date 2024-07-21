@@ -1,15 +1,17 @@
+import 'package:appwrite_workbench/core/appwrite_client.dart';
+import 'package:appwrite_workbench/core/provider_scope_extension.dart';
 import 'package:appwrite_workbench/features/project/presentation/widgets/headbar_widget.dart';
 import 'package:appwrite_workbench/features/project/presentation/widgets/project_drawer_widget.dart';
 import 'package:appwrite_workbench/global_providars.dart';
 import 'package:appwrite_workbench/models/project.dart';
 import 'package:appwrite_workbench/routers/app_router.dart';
+import 'package:appwrite_workbench/services/local_storage_service.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 @RoutePage()
-class ProjectScreen extends ConsumerWidget {
+class ProjectScreen extends ConsumerWidget implements AutoRouteWrapper {
   const ProjectScreen({required this.project, super.key});
 
   final ProjectWorkbench project;
@@ -22,6 +24,26 @@ class ProjectScreen extends ConsumerWidget {
       ],
       child: const _Main(),
     );
+  }
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return scope(overrides: [
+      appwriteClientProvider.overrideWith((ref) {
+        if (project is ProjectApi) {
+          final apiKey = LocalStorageService.instance
+              .getKey(projectId: (project as ProjectApi).projectId);
+          final appwriteClient = AppwriteClient(
+            apiKey: apiKey,
+            projectApi: project as ProjectApi,
+          );
+
+          return appwriteClient;
+        }
+
+        throw UnimplementedError();
+      }),
+    ]);
   }
 }
 
