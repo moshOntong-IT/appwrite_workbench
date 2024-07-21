@@ -92,9 +92,9 @@ class ProjectApiService implements ProjectService<ProjectApi> {
       if (Platform.isWindows) {
         await shell.run('explorer $directory');
       } else if (Platform.isMacOS) {
-        await shell.run('open $directory');
+        await shell.run('open "$directory"');
       } else if (Platform.isLinux) {
-        await shell.run('xdg-open $directory');
+        await shell.run('xdg-open "$directory"');
       } else {
         throw AppwriteWorkbenchException(
             message: 'Unsupported platform',
@@ -121,9 +121,9 @@ class ProjectApiService implements ProjectService<ProjectApi> {
       if (Platform.isWindows) {
         await shell.run('cmd /c start cmd.exe /K cd /d $directory');
       } else if (Platform.isMacOS) {
-        await shell.run('open -a Terminal $directory');
+        await shell.run('open -a Terminal "$directory"');
       } else if (Platform.isLinux) {
-        await shell.run('x-terminal-emulator --working-directory=$directory');
+        await shell.run('x-terminal-emulator --working-directory="$directory"');
       } else {
         throw AppwriteWorkbenchException(
             message: 'Unsupported platform',

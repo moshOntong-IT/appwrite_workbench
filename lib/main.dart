@@ -1,3 +1,4 @@
+import 'package:appwrite_workbench/core/guard_shell%20copy.dart';
 import 'package:appwrite_workbench/routers/app_router.dart';
 import 'package:appwrite_workbench/routers/service_router.dart';
 import 'package:appwrite_workbench/services/local_storage_service.dart';
@@ -7,6 +8,12 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:toastification/toastification.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalStorageService.instance.initialize();
+  await guardShell(guardMain);
+}
+
+void guardMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalStorageService.instance.initialize();
   runApp(
