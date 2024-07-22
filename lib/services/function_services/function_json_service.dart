@@ -23,4 +23,17 @@ class FunctionJsonService implements FunctionService<FunctionJson> {
     // TODO: implement createFunction
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<FunctionJson>> listFunction({required ProjectWorkbench project}) {
+    // TODO: implement getFunctions
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<FunctionJson>> watchFunction(
+      {required ProjectWorkbench project}) {
+    // TODO: implement watchFunction
+    throw UnimplementedError();
+  }
 }

@@ -13,6 +13,8 @@ sealed class FunctionServiceBase<T extends FunctionWorkbench> {
     required String runtime,
     required ProjectWorkbench project,
   });
+  Future<List<T>> listFunction({required ProjectWorkbench project});
+  Stream<List<T>> watchFunction({required ProjectWorkbench project});
 }
 
 abstract class FunctionService<T extends FunctionWorkbench>

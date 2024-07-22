@@ -8,6 +8,7 @@ import 'package:appwrite_workbench/models/project.dart';
 import 'package:appwrite_workbench/services/function_services/function_service.dart';
 import 'package:appwrite_workbench/services/local_storage_service.dart';
 import 'package:dart_appwrite/dart_appwrite.dart';
+import 'package:isar/isar.dart';
 import 'package:path/path.dart' as path;
 import 'package:dart_appwrite/models.dart' as appwrite_models;
 import 'package:logging/logging.dart';
@@ -80,15 +81,40 @@ class FunctionApiService implements FunctionService<FunctionApi> {
         gitInitCommands = 'cmd /c "$gitInitCommands"';
         gitPullCommands = 'cmd /c "$gitPullCommands"';
       }
-      final shell = Shell(workingDirectory: functionsDirectoryDedicated.path);
+      try {
+        final shell = Shell(workingDirectory: functionsDirectoryDedicated.path);
 
-      _logger.info('Running git commands');
-      await shell.run(gitInitCommands);
-      _logger.finest('Running git  commands');
-      _logger.info('Running git pull commands');
-      await shell.run(gitPullCommands);
-      _logger.finest('Running git pull commands');
-
+        _logger.info('Running git commands');
+        await shell.run(gitInitCommands);
+        _logger.finest('Running git  commands');
+        _logger.info('Running git pull commands');
+        await shell.run(gitPullCommands);
+        _logger.finest('Running git pull commands');
+      } on ShellException catch (e, stackTrace) {
+        _logger.severe('Error running git commands: $e', e, stackTrace);
+        throw AppwriteWorkbenchException(
+            message: e.message,
+            code: AppwriteWorkbenchExceptionCode.unknown,
+            stackTrace: stackTrace);
+      } catch (e, stackTrace) {
+        _logger.severe('Error running git commands: $e', e, stackTrace);
+        // Handle specialized errors with recommended actions
+        if (e.toString().contains('error: unknown option')) {
+          throw AppwriteWorkbenchException(
+              message:
+                  '${e.toString()} \n\nSuggestion: Try updating your git to the latest version, then try running this command again.',
+              code: AppwriteWorkbenchExceptionCode.unknown,
+              stackTrace: stackTrace);
+        } else if (e.toString().contains(
+                'is not recognized as an internal or external command,') ||
+            e.toString().contains('command not found')) {
+          throw AppwriteWorkbenchException(
+              message:
+                  '${e.toString()} \n\nSuggestion: Make sure you have git installed on your system and it is added to your PATH.',
+              code: AppwriteWorkbenchExceptionCode.unknown,
+              stackTrace: stackTrace);
+        }
+      }
       // Clean up the .git directory
       final Directory gitDir = Directory(path.join(
         functionsDirectoryDedicated.path,
@@ -118,7 +144,9 @@ class FunctionApiService implements FunctionService<FunctionApi> {
         _logger.finest('Runtime directory deleted');
       }
 
-      final response = FunctionApi.fromJson(responseData);
+      final response = FunctionApi.fromJson(responseData)
+        ..createdAt = DateTime.parse(responseData.$createdAt).toLocal()
+        ..updatedAt = DateTime.parse(responseData.$updatedAt).toLocal();
       response.projects.add(project as ProjectApi);
       LocalStorageService.isar.writeTxn(() async {
         await LocalStorageService.isar.functionApis.put(response);
@@ -133,22 +161,18 @@ class FunctionApiService implements FunctionService<FunctionApi> {
           message: e.message ?? 'Error creating function',
           code: AppwriteWorkbenchExceptionCode.unknown,
           stackTrace: stackTrace);
+    } on AppwriteWorkbenchException catch (e, stackTrace) {
+      _logger.severe('Error creating function: $e', e, stackTrace);
+
+      throw AppwriteWorkbenchException(
+          message: e.message,
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: stackTrace);
     } catch (e, stackTrace) {
       _logger.severe('Error creating function: $e', e, stackTrace);
 
-      // Handle specialized errors with recommended actions
-      if (e.toString().contains('error: unknown option')) {
-        throw Exception(
-            '${e.toString()} \n\nSuggestion: Try updating your git to the latest version, then try running this command again.');
-      } else if (e.toString().contains(
-              'is not recognized as an internal or external command,') ||
-          e.toString().contains('command not found')) {
-        throw Exception(
-            '${e.toString()} \n\nSuggestion: It appears that git is not installed, try installing git then try running this command again.');
-      }
-
       throw AppwriteWorkbenchException(
-          message: 'Error creating function',
+          message: e.toString(),
           code: AppwriteWorkbenchExceptionCode.unknown,
           stackTrace: stackTrace);
     }
@@ -216,5 +240,35 @@ class FunctionApiService implements FunctionService<FunctionApi> {
           code: AppwriteWorkbenchExceptionCode.alreadyExists,
           stackTrace: StackTrace.current);
     }
+  }
+
+  @override
+  Future<List<FunctionApi>> listFunction({
+    required ProjectWorkbench project,
+  }) async {
+    try {
+      _logger.info('Getting functions');
+      final functions =
+          await LocalStorageService.isar.functionApis.filter().projects((q) {
+        return q.idEqualTo(project.id);
+      }).findAll();
+
+      _logger.info('Got functions: $functions');
+      return functions;
+    } catch (e, stackTrace) {
+      _logger.severe('Error getting functions: $e', e, stackTrace);
+
+      throw AppwriteWorkbenchException(
+          message: 'Error getting functions',
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: stackTrace);
+    }
+  }
+
+  @override
+  Stream<List<FunctionApi>> watchFunction({required ProjectWorkbench project}) {
+    return LocalStorageService.isar.functionApis.filter().projects((q) {
+      return q.idEqualTo(project.id);
+    }).watch();
   }
 }
