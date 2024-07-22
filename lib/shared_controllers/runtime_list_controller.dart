@@ -13,16 +13,16 @@ final runtimeListControllerProvider =
 
 class RuntimeListController extends AutoDisposeAsyncNotifier<List<Runtime>> {
   @override
-  FutureOr<List<Runtime>> build() {
+  FutureOr<List<Runtime>> build() async {
     final client = ref.read(appwriteClientProvider);
-    final runtimes = FunctionService<FunctionApi>(client: client).listRuntime();
+    final runtimes = await FunctionService.api(client: client).listRuntime();
     return runtimes;
   }
 
   Future<void> searchRuntime(String query) async {
     try {
       final client = ref.read(appwriteClientProvider);
-      final runtimes = await FunctionService<FunctionApi>(client: client)
+      final runtimes = await FunctionService<FunctionApi>.api(client: client)
           .listRuntime(queries: [
         Query.contains('name', query),
       ]);

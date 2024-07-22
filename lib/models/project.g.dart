@@ -55,7 +55,15 @@ const ProjectApiSchema = CollectionSchema(
   deserializeProp: _projectApiDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'functions': LinkSchema(
+      id: -677583951855659461,
+      name: r'functions',
+      target: r'FunctionApi',
+      single: false,
+      linkName: r'projects',
+    )
+  },
   embeddedSchemas: {},
   getId: _projectApiGetId,
   getLinks: _projectApiGetLinks,
@@ -147,11 +155,13 @@ Id _projectApiGetId(ProjectApi object) {
 }
 
 List<IsarLinkBase<dynamic>> _projectApiGetLinks(ProjectApi object) {
-  return [];
+  return [object.functions];
 }
 
 void _projectApiAttach(IsarCollection<dynamic> col, Id id, ProjectApi object) {
   object.id = id;
+  object.functions
+      .attach(col, col.isar.collection<FunctionApi>(), r'functions', id);
 }
 
 extension ProjectApiQueryWhereSort
@@ -850,7 +860,68 @@ extension ProjectApiQueryObject
     on QueryBuilder<ProjectApi, ProjectApi, QFilterCondition> {}
 
 extension ProjectApiQueryLinks
-    on QueryBuilder<ProjectApi, ProjectApi, QFilterCondition> {}
+    on QueryBuilder<ProjectApi, ProjectApi, QFilterCondition> {
+  QueryBuilder<ProjectApi, ProjectApi, QAfterFilterCondition> functions(
+      FilterQuery<FunctionApi> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'functions');
+    });
+  }
+
+  QueryBuilder<ProjectApi, ProjectApi, QAfterFilterCondition>
+      functionsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'functions', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<ProjectApi, ProjectApi, QAfterFilterCondition>
+      functionsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'functions', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<ProjectApi, ProjectApi, QAfterFilterCondition>
+      functionsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'functions', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<ProjectApi, ProjectApi, QAfterFilterCondition>
+      functionsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'functions', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<ProjectApi, ProjectApi, QAfterFilterCondition>
+      functionsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'functions', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<ProjectApi, ProjectApi, QAfterFilterCondition>
+      functionsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'functions', lower, includeLower, upper, includeUpper);
+    });
+  }
+}
 
 extension ProjectApiQuerySortBy
     on QueryBuilder<ProjectApi, ProjectApi, QSortBy> {

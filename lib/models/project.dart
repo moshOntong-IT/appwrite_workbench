@@ -1,3 +1,4 @@
+import 'package:appwrite_workbench/models/function.dart';
 import 'package:appwrite_workbench/models/service.dart';
 import 'package:isar/isar.dart';
 
@@ -21,6 +22,9 @@ class ProjectApi extends ProjectWorkbench {
 
   @ignore
   late String apiKey;
+
+  @Backlink(to: 'projects')
+  final functions = IsarLinks<FunctionApi>();
 }
 
 @collection

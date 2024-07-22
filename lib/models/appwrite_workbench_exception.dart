@@ -9,6 +9,9 @@ class AppwriteWorkbenchException implements Exception {
   final StackTrace? stackTrace;
   final int code;
 
+  @override
+  String toString() => message;
+
   /// Maybe when method and return T
   T maybeWhen<T>({
     T Function()? unknown,

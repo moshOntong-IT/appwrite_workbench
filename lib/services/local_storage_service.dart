@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:appwrite_workbench/core/appwrite_workbench_code.dart';
 import 'package:appwrite_workbench/models/appwrite_workbench_exception.dart';
+import 'package:appwrite_workbench/models/function.dart';
 import 'package:appwrite_workbench/models/project.dart';
 import 'package:appwrite_workbench/services/preference_service.dart';
 import 'package:dart_appwrite/models.dart';
@@ -56,6 +57,7 @@ class LocalStorageService {
       [
         ProjectApiSchema,
         ProjectJsonSchema,
+        FunctionApiSchema,
       ],
       directory: base,
     );
