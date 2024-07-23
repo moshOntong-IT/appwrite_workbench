@@ -42,55 +42,100 @@ const FunctionApiSchema = CollectionSchema(
       name: r'commands',
       type: IsarType.string,
     ),
-    r'enabled': PropertySchema(
+    r'deployment': PropertySchema(
       id: 5,
+      name: r'deployment',
+      type: IsarType.string,
+    ),
+    r'enabled': PropertySchema(
+      id: 6,
       name: r'enabled',
       type: IsarType.bool,
     ),
     r'entrypoint': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'entrypoint',
       type: IsarType.string,
     ),
     r'events': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'events',
       type: IsarType.stringList,
     ),
     r'execute': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'execute',
       type: IsarType.stringList,
     ),
     r'ignore': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'ignore',
       type: IsarType.stringList,
     ),
+    r'installationId': PropertySchema(
+      id: 11,
+      name: r'installationId',
+      type: IsarType.string,
+    ),
+    r'live': PropertySchema(
+      id: 12,
+      name: r'live',
+      type: IsarType.bool,
+    ),
     r'logging': PropertySchema(
-      id: 10,
+      id: 13,
       name: r'logging',
       type: IsarType.bool,
     ),
     r'name': PropertySchema(
-      id: 11,
+      id: 14,
       name: r'name',
       type: IsarType.string,
     ),
+    r'providerBranch': PropertySchema(
+      id: 15,
+      name: r'providerBranch',
+      type: IsarType.string,
+    ),
+    r'providerRepositoryId': PropertySchema(
+      id: 16,
+      name: r'providerRepositoryId',
+      type: IsarType.string,
+    ),
+    r'providerRootDirectory': PropertySchema(
+      id: 17,
+      name: r'providerRootDirectory',
+      type: IsarType.string,
+    ),
+    r'providerSilentMode': PropertySchema(
+      id: 18,
+      name: r'providerSilentMode',
+      type: IsarType.bool,
+    ),
     r'runtime': PropertySchema(
-      id: 12,
+      id: 19,
       name: r'runtime',
       type: IsarType.string,
     ),
     r'schedule': PropertySchema(
-      id: 13,
+      id: 20,
       name: r'schedule',
       type: IsarType.string,
     ),
+    r'scopes': PropertySchema(
+      id: 21,
+      name: r'scopes',
+      type: IsarType.stringList,
+    ),
     r'timeout': PropertySchema(
-      id: 14,
+      id: 22,
       name: r'timeout',
       type: IsarType.long,
+    ),
+    r'version': PropertySchema(
+      id: 23,
+      name: r'version',
+      type: IsarType.string,
     )
   },
   estimateSize: _functionApiEstimateSize,
@@ -123,6 +168,12 @@ int _functionApiEstimateSize(
   bytesCount += 3 + object.$id.length * 3;
   {
     final value = object.commands;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.deployment;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -169,10 +220,52 @@ int _functionApiEstimateSize(
       }
     }
   }
+  {
+    final value = object.installationId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.name.length * 3;
+  {
+    final value = object.providerBranch;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.providerRepositoryId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.providerRootDirectory;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.runtime.length * 3;
   {
     final value = object.schedule;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final list = object.scopes;
+    if (list != null) {
+      bytesCount += 3 + list.length * 3;
+      {
+        for (var i = 0; i < list.length; i++) {
+          final value = list[i];
+          bytesCount += value.length * 3;
+        }
+      }
+    }
+  }
+  {
+    final value = object.version;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -191,16 +284,25 @@ void _functionApiSerialize(
   writer.writeDateTime(offsets[2], object.syncedAt);
   writer.writeDateTime(offsets[3], object.updatedAt);
   writer.writeString(offsets[4], object.commands);
-  writer.writeBool(offsets[5], object.enabled);
-  writer.writeString(offsets[6], object.entrypoint);
-  writer.writeStringList(offsets[7], object.events);
-  writer.writeStringList(offsets[8], object.execute);
-  writer.writeStringList(offsets[9], object.ignore);
-  writer.writeBool(offsets[10], object.logging);
-  writer.writeString(offsets[11], object.name);
-  writer.writeString(offsets[12], object.runtime);
-  writer.writeString(offsets[13], object.schedule);
-  writer.writeLong(offsets[14], object.timeout);
+  writer.writeString(offsets[5], object.deployment);
+  writer.writeBool(offsets[6], object.enabled);
+  writer.writeString(offsets[7], object.entrypoint);
+  writer.writeStringList(offsets[8], object.events);
+  writer.writeStringList(offsets[9], object.execute);
+  writer.writeStringList(offsets[10], object.ignore);
+  writer.writeString(offsets[11], object.installationId);
+  writer.writeBool(offsets[12], object.live);
+  writer.writeBool(offsets[13], object.logging);
+  writer.writeString(offsets[14], object.name);
+  writer.writeString(offsets[15], object.providerBranch);
+  writer.writeString(offsets[16], object.providerRepositoryId);
+  writer.writeString(offsets[17], object.providerRootDirectory);
+  writer.writeBool(offsets[18], object.providerSilentMode);
+  writer.writeString(offsets[19], object.runtime);
+  writer.writeString(offsets[20], object.schedule);
+  writer.writeStringList(offsets[21], object.scopes);
+  writer.writeLong(offsets[22], object.timeout);
+  writer.writeString(offsets[23], object.version);
 }
 
 FunctionApi _functionApiDeserialize(
@@ -214,17 +316,26 @@ FunctionApi _functionApiDeserialize(
   object.$id = reader.readString(offsets[1]);
   object.updatedAt = reader.readDateTime(offsets[3]);
   object.commands = reader.readStringOrNull(offsets[4]);
-  object.enabled = reader.readBoolOrNull(offsets[5]);
-  object.entrypoint = reader.readStringOrNull(offsets[6]);
-  object.events = reader.readStringList(offsets[7]);
-  object.execute = reader.readStringList(offsets[8]);
+  object.deployment = reader.readStringOrNull(offsets[5]);
+  object.enabled = reader.readBoolOrNull(offsets[6]);
+  object.entrypoint = reader.readStringOrNull(offsets[7]);
+  object.events = reader.readStringList(offsets[8]);
+  object.execute = reader.readStringList(offsets[9]);
   object.id = id;
-  object.ignore = reader.readStringList(offsets[9]);
-  object.logging = reader.readBoolOrNull(offsets[10]);
-  object.name = reader.readString(offsets[11]);
-  object.runtime = reader.readString(offsets[12]);
-  object.schedule = reader.readStringOrNull(offsets[13]);
-  object.timeout = reader.readLongOrNull(offsets[14]);
+  object.ignore = reader.readStringList(offsets[10]);
+  object.installationId = reader.readStringOrNull(offsets[11]);
+  object.live = reader.readBoolOrNull(offsets[12]);
+  object.logging = reader.readBoolOrNull(offsets[13]);
+  object.name = reader.readString(offsets[14]);
+  object.providerBranch = reader.readStringOrNull(offsets[15]);
+  object.providerRepositoryId = reader.readStringOrNull(offsets[16]);
+  object.providerRootDirectory = reader.readStringOrNull(offsets[17]);
+  object.providerSilentMode = reader.readBoolOrNull(offsets[18]);
+  object.runtime = reader.readString(offsets[19]);
+  object.schedule = reader.readStringOrNull(offsets[20]);
+  object.scopes = reader.readStringList(offsets[21]);
+  object.timeout = reader.readLongOrNull(offsets[22]);
+  object.version = reader.readStringOrNull(offsets[23]);
   return object;
 }
 
@@ -246,25 +357,43 @@ P _functionApiDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 6:
       return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (reader.readBoolOrNull(offset)) as P;
     case 7:
-      return (reader.readStringList(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readStringList(offset)) as P;
     case 9:
       return (reader.readStringList(offset)) as P;
     case 10:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringList(offset)) as P;
     case 11:
-      return (reader.readString(offset)) as P;
-    case 12:
-      return (reader.readString(offset)) as P;
-    case 13:
       return (reader.readStringOrNull(offset)) as P;
+    case 12:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 13:
+      return (reader.readBoolOrNull(offset)) as P;
     case 14:
+      return (reader.readString(offset)) as P;
+    case 15:
+      return (reader.readStringOrNull(offset)) as P;
+    case 16:
+      return (reader.readStringOrNull(offset)) as P;
+    case 17:
+      return (reader.readStringOrNull(offset)) as P;
+    case 18:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 19:
+      return (reader.readString(offset)) as P;
+    case 20:
+      return (reader.readStringOrNull(offset)) as P;
+    case 21:
+      return (reader.readStringList(offset)) as P;
+    case 22:
       return (reader.readLongOrNull(offset)) as P;
+    case 23:
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -811,6 +940,160 @@ extension FunctionApiQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'commands',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'deployment',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'deployment',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'deployment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'deployment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'deployment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'deployment',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'deployment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'deployment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'deployment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'deployment',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'deployment',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      deploymentIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'deployment',
         value: '',
       ));
     });
@@ -1779,6 +2062,187 @@ extension FunctionApiQueryFilter
   }
 
   QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'installationId',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'installationId',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'installationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'installationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'installationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'installationId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'installationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'installationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'installationId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'installationId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'installationId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      installationIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'installationId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> liveIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'live',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      liveIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'live',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> liveEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'live',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
       loggingIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1933,6 +2397,497 @@ extension FunctionApiQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'providerBranch',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'providerBranch',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'providerBranch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'providerBranch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'providerBranch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'providerBranch',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'providerBranch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'providerBranch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'providerBranch',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'providerBranch',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'providerBranch',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerBranchIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'providerBranch',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'providerRepositoryId',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'providerRepositoryId',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'providerRepositoryId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'providerRepositoryId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'providerRepositoryId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'providerRepositoryId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'providerRepositoryId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'providerRepositoryId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'providerRepositoryId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'providerRepositoryId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'providerRepositoryId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRepositoryIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'providerRepositoryId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'providerRootDirectory',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'providerRootDirectory',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'providerRootDirectory',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'providerRootDirectory',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'providerRootDirectory',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'providerRootDirectory',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'providerRootDirectory',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'providerRootDirectory',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'providerRootDirectory',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'providerRootDirectory',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'providerRootDirectory',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerRootDirectoryIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'providerRootDirectory',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerSilentModeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'providerSilentMode',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerSilentModeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'providerSilentMode',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      providerSilentModeEqualTo(bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'providerSilentMode',
+        value: value,
       ));
     });
   }
@@ -2224,6 +3179,248 @@ extension FunctionApiQueryFilter
     });
   }
 
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> scopesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'scopes',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'scopes',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'scopes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'scopes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'scopes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'scopes',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'scopes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'scopes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'scopes',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'scopes',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'scopes',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'scopes',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'scopes',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'scopes',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'scopes',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'scopes',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'scopes',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      scopesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'scopes',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
   QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
       timeoutIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -2292,6 +3489,158 @@ extension FunctionApiQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      versionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'version',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      versionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'version',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> versionEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'version',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      versionGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'version',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> versionLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'version',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> versionBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'version',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      versionStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'version',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> versionEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'version',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> versionContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'version',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition> versionMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'version',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      versionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'version',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterFilterCondition>
+      versionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'version',
+        value: '',
       ));
     });
   }
@@ -2426,6 +3775,18 @@ extension FunctionApiQuerySortBy
     });
   }
 
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByDeployment() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deployment', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByDeploymentDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deployment', Sort.desc);
+    });
+  }
+
   QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'enabled', Sort.asc);
@@ -2450,6 +3811,31 @@ extension FunctionApiQuerySortBy
     });
   }
 
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByInstallationId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'installationId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      sortByInstallationIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'installationId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByLive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'live', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByLiveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'live', Sort.desc);
+    });
+  }
+
   QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByLogging() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'logging', Sort.asc);
@@ -2471,6 +3857,61 @@ extension FunctionApiQuerySortBy
   QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByProviderBranch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerBranch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      sortByProviderBranchDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerBranch', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      sortByProviderRepositoryId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerRepositoryId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      sortByProviderRepositoryIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerRepositoryId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      sortByProviderRootDirectory() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerRootDirectory', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      sortByProviderRootDirectoryDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerRootDirectory', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      sortByProviderSilentMode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerSilentMode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      sortByProviderSilentModeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerSilentMode', Sort.desc);
     });
   }
 
@@ -2507,6 +3948,18 @@ extension FunctionApiQuerySortBy
   QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByTimeoutDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timeout', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByVersion() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'version', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> sortByVersionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'version', Sort.desc);
     });
   }
 }
@@ -2573,6 +4026,18 @@ extension FunctionApiQuerySortThenBy
     });
   }
 
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByDeployment() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deployment', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByDeploymentDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deployment', Sort.desc);
+    });
+  }
+
   QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'enabled', Sort.asc);
@@ -2609,6 +4074,31 @@ extension FunctionApiQuerySortThenBy
     });
   }
 
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByInstallationId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'installationId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      thenByInstallationIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'installationId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByLive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'live', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByLiveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'live', Sort.desc);
+    });
+  }
+
   QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByLogging() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'logging', Sort.asc);
@@ -2630,6 +4120,61 @@ extension FunctionApiQuerySortThenBy
   QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByProviderBranch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerBranch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      thenByProviderBranchDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerBranch', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      thenByProviderRepositoryId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerRepositoryId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      thenByProviderRepositoryIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerRepositoryId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      thenByProviderRootDirectory() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerRootDirectory', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      thenByProviderRootDirectoryDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerRootDirectory', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      thenByProviderSilentMode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerSilentMode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy>
+      thenByProviderSilentModeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'providerSilentMode', Sort.desc);
     });
   }
 
@@ -2668,6 +4213,18 @@ extension FunctionApiQuerySortThenBy
       return query.addSortBy(r'timeout', Sort.desc);
     });
   }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByVersion() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'version', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QAfterSortBy> thenByVersionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'version', Sort.desc);
+    });
+  }
 }
 
 extension FunctionApiQueryWhereDistinct
@@ -2704,6 +4261,13 @@ extension FunctionApiQueryWhereDistinct
     });
   }
 
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByDeployment(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'deployment', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'enabled');
@@ -2735,6 +4299,20 @@ extension FunctionApiQueryWhereDistinct
     });
   }
 
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByInstallationId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'installationId',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByLive() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'live');
+    });
+  }
+
   QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByLogging() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'logging');
@@ -2745,6 +4323,37 @@ extension FunctionApiQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByProviderBranch(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'providerBranch',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct>
+      distinctByProviderRepositoryId({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'providerRepositoryId',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct>
+      distinctByProviderRootDirectory({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'providerRootDirectory',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct>
+      distinctByProviderSilentMode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'providerSilentMode');
     });
   }
 
@@ -2762,9 +4371,22 @@ extension FunctionApiQueryWhereDistinct
     });
   }
 
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByScopes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'scopes');
+    });
+  }
+
   QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByTimeout() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'timeout');
+    });
+  }
+
+  QueryBuilder<FunctionApi, FunctionApi, QDistinct> distinctByVersion(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'version', caseSensitive: caseSensitive);
     });
   }
 }
@@ -2807,6 +4429,12 @@ extension FunctionApiQueryProperty
     });
   }
 
+  QueryBuilder<FunctionApi, String?, QQueryOperations> deploymentProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'deployment');
+    });
+  }
+
   QueryBuilder<FunctionApi, bool?, QQueryOperations> enabledProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'enabled');
@@ -2837,6 +4465,19 @@ extension FunctionApiQueryProperty
     });
   }
 
+  QueryBuilder<FunctionApi, String?, QQueryOperations>
+      installationIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'installationId');
+    });
+  }
+
+  QueryBuilder<FunctionApi, bool?, QQueryOperations> liveProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'live');
+    });
+  }
+
   QueryBuilder<FunctionApi, bool?, QQueryOperations> loggingProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'logging');
@@ -2846,6 +4487,34 @@ extension FunctionApiQueryProperty
   QueryBuilder<FunctionApi, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<FunctionApi, String?, QQueryOperations>
+      providerBranchProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'providerBranch');
+    });
+  }
+
+  QueryBuilder<FunctionApi, String?, QQueryOperations>
+      providerRepositoryIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'providerRepositoryId');
+    });
+  }
+
+  QueryBuilder<FunctionApi, String?, QQueryOperations>
+      providerRootDirectoryProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'providerRootDirectory');
+    });
+  }
+
+  QueryBuilder<FunctionApi, bool?, QQueryOperations>
+      providerSilentModeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'providerSilentMode');
     });
   }
 
@@ -2861,9 +4530,21 @@ extension FunctionApiQueryProperty
     });
   }
 
+  QueryBuilder<FunctionApi, List<String>?, QQueryOperations> scopesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'scopes');
+    });
+  }
+
   QueryBuilder<FunctionApi, int?, QQueryOperations> timeoutProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'timeout');
+    });
+  }
+
+  QueryBuilder<FunctionApi, String?, QQueryOperations> versionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'version');
     });
   }
 }

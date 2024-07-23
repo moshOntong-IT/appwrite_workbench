@@ -1,5 +1,6 @@
 import 'package:appwrite_workbench/features/functions/presentation/create_function_dialog.dart';
 import 'package:appwrite_workbench/global_providars.dart';
+import 'package:appwrite_workbench/models/project.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -65,7 +66,6 @@ class _CreateFunction extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appwriteClient = ref.watch(appwriteClientProvider);
     final project = ref.watch(projectSelectedProvider);
     return ShadButton(
       icon: const Icon(
@@ -73,13 +73,15 @@ class _CreateFunction extends ConsumerWidget {
       ),
       text: const Text('Create Function'),
       onPressed: () {
-        showShadDialog(
-          context: context,
-          builder: (context) => CreateFunctionDialog(
-            project: project,
-            client: appwriteClient,
-          ),
-        );
+        if (project is ProjectApi) {
+          showShadDialog(
+            context: context,
+            builder: (context) => CreateFunctionDialog(
+              project: project,
+              client: ref.read(appwriteClientProvider),
+            ),
+          );
+        }
       },
     );
   }

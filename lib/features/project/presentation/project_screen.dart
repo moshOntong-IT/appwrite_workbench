@@ -29,8 +29,8 @@ class ProjectScreen extends ConsumerWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return scope(overrides: [
-      appwriteClientProvider.overrideWith((ref) {
-        if (project is ProjectApi) {
+      if (project is ProjectApi)
+        appwriteClientProvider.overrideWith((ref) {
           final apiKey = LocalStorageService.instance
               .getKey(projectId: (project as ProjectApi).projectId);
           final appwriteClient = AppwriteClient(
@@ -39,10 +39,7 @@ class ProjectScreen extends ConsumerWidget implements AutoRouteWrapper {
           );
 
           return appwriteClient;
-        }
-
-        throw UnimplementedError();
-      }),
+        }),
     ]);
   }
 }

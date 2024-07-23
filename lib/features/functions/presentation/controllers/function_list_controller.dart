@@ -17,9 +17,15 @@ class FunctionListController
     ref.onDispose(() {
       _subscription?.cancel();
     });
+
+    return _get();
+  }
+
+  Future<List<FunctionWorkbench>> _get() async {
     final project = ref.read(projectSelectedProvider);
-    final client = ref.read(appwriteClientProvider);
+
     if (project.type == ProjectType.api) {
+      final client = ref.read(appwriteClientProvider);
       _subscription?.cancel();
 
       _subscription = FunctionService.api(client: client)
@@ -29,8 +35,7 @@ class FunctionListController
       });
       return FunctionService.api(client: client).listFunction(project: project);
     } else {
-      return FunctionService.json(client: client)
-          .listFunction(project: project);
+      return FunctionService.json().listFunction(project: project);
     }
   }
 

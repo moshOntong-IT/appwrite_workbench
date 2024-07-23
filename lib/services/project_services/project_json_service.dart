@@ -133,7 +133,7 @@ class ProjectJsonService implements ProjectService<ProjectJson> {
 
       final shell = Shell();
       if (Platform.isWindows) {
-        await shell.run('explorer $directory');
+        await shell.run('start "$directory"');
       } else if (Platform.isMacOS) {
         await shell.run('open "$directory"');
       } else if (Platform.isLinux) {

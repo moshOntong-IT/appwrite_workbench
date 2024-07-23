@@ -33,7 +33,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Appwrite Builder Login',
+                  'Appwrite Workbench Login',
                   style: ShadTheme.of(context).textTheme.h1.copyWith(
                         fontWeight: FontWeight.w900,
                         color: const Color(0xFFF02D65),

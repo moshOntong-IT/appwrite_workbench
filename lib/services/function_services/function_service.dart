@@ -33,6 +33,5 @@ abstract class FunctionService<T extends FunctionWorkbench>
   factory FunctionService.api({required AppwriteClient client}) =>
       FunctionApiService(client: client) as FunctionService<T>;
 
-  factory FunctionService.json({required AppwriteClient client}) =>
-      FunctionJsonService() as FunctionService<T>;
+  factory FunctionService.json() => FunctionJsonService() as FunctionService<T>;
 }
