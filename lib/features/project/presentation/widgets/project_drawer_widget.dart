@@ -10,8 +10,10 @@ final _onIndexChangeProvider = Provider<void Function(int)>((ref) {
 });
 
 enum DrawerItemEnum {
-  // databases(icon: LucideIcons.database, title: 'Databases'),
-  functions(icon: LucideIcons.zap, title: 'Functions');
+  functions(icon: LucideIcons.zap, title: 'Functions'),
+  databases(icon: LucideIcons.database, title: 'Databases'),
+  backup(icon: LucideIcons.databaseBackup, title: 'Backup & Restore'),
+  ;
 
   const DrawerItemEnum({required this.icon, required this.title});
 

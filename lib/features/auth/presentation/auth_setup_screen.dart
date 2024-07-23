@@ -33,7 +33,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Appwrite Setup',
+                  'Appwrite Workbench Setup',
                   style: ShadTheme.of(context).textTheme.h1.copyWith(
                         fontWeight: FontWeight.w900,
                         color: const Color(0xFFF02D65),
