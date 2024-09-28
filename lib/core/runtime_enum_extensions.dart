@@ -126,10 +126,77 @@ extension StringToRuntimeExtension on String {
         return Runtime.cpp20;
       case 'bun-1.0':
         return Runtime.bun10;
-      case 'go-1.22':
-        return Runtime.go122;
+      case 'go-1.23':
+        return Runtime.go123;
       default:
         throw ArgumentError('Unknown runtime code: $this');
     }
+  }
+}
+
+String getEntrypoint(String runtime) {
+  final language = runtime.split('-')[0];
+
+  switch (language) {
+    case 'dart':
+      return 'lib/main.dart';
+    case 'deno':
+      return 'src/main.ts';
+    case 'node':
+      return 'src/main.js';
+    case 'bun':
+      return 'src/main.ts';
+    case 'php':
+      return 'src/index.php';
+    case 'python':
+      return 'src/main.py';
+    case 'ruby':
+      return 'lib/main.rb';
+    case 'rust':
+      return 'main.rs';
+    case 'swift':
+      return 'Sources/index.swift';
+    case 'cpp':
+      return 'src/main.cc';
+    case 'dotnet':
+      return 'src/Index.cs';
+    case 'java':
+      return 'src/Main.java';
+    case 'kotlin':
+      return 'src/Main.kt';
+    default:
+      throw ArgumentError('Unknown runtime code: $runtime');
+  }
+}
+
+String getInstallCommand(String runtime) {
+  final language = runtime.split('-')[0];
+
+  switch (language) {
+    case 'dart':
+      return 'dart pub get';
+    case 'deno':
+      return 'deno install';
+    case 'node':
+      return 'npm install';
+    case 'bun':
+      return 'bun install';
+    case 'php':
+      return 'composer install';
+    case 'python':
+      return 'pip install -r requirements.txt';
+    case 'ruby':
+      return 'bundle install';
+    case 'rust':
+      return 'cargo install';
+    case 'dotnet':
+      return 'dotnet restore';
+    case 'swift':
+    case 'java':
+    case 'kotlin':
+    case 'cpp':
+      return '';
+    default:
+      throw ArgumentError('Unknown runtime code: $runtime');
   }
 }

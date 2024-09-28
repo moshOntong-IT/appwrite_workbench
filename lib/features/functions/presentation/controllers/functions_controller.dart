@@ -6,17 +6,16 @@ import 'package:appwrite_workbench/services/function_services/function_service.d
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final functionsControllerProvider =
-    AutoDisposeAsyncNotifierProvider<FunctionsController, void>(
-        () => FunctionsController());
-
 class FunctionsController extends AutoDisposeAsyncNotifier<void> {
+  static final provider =
+      AutoDisposeAsyncNotifierProvider<FunctionsController, void>(
+          () => FunctionsController());
   @override
   FutureOr<void> build() {}
 
   Future<void> createFunction({
+    String? name,
     required String id,
-    required String name,
     required String runtime,
     required ProjectWorkbench project,
     VoidCallback? onSuccess,
@@ -44,9 +43,9 @@ class FunctionsController extends AutoDisposeAsyncNotifier<void> {
 
   Future<void> createFunctionApi({
     required String id,
-    required String name,
     required String runtime,
     required ProjectWorkbench project,
+    String? name,
   }) async {
     final client = ref.read(appwriteClientProvider);
     await FunctionService.api(client: client).createFunction(

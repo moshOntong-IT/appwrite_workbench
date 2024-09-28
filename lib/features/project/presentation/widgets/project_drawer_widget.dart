@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -11,8 +10,8 @@ final _onIndexChangeProvider = Provider<void Function(int)>((ref) {
 
 enum DrawerItemEnum {
   functions(icon: LucideIcons.zap, title: 'Functions'),
-  databases(icon: LucideIcons.database, title: 'Databases'),
-  backup(icon: LucideIcons.databaseBackup, title: 'Backup & Restore'),
+  // databases(icon: LucideIcons.database, title: 'Databases'),
+  // backup(icon: LucideIcons.databaseBackup, title: 'Backup & Restore'),
   ;
 
   const DrawerItemEnum({required this.icon, required this.title});
@@ -92,33 +91,14 @@ class _Item extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(_indexProvider);
 
-    return ShadButton(
-      hoverBackgroundColor: currentIndex != index
-          ? ShadTheme.of(context).colorScheme.muted
-          : null,
-      hoverForegroundColor: currentIndex != index
-          ? ShadTheme.of(context).colorScheme.primary
-          : null,
-      backgroundColor: currentIndex == index
-          ? ShadTheme.of(context).colorScheme.primary
-          : Colors.transparent,
-      foregroundColor: currentIndex == index
-          ? ShadTheme.of(context).colorScheme.primaryForeground
-          : ShadTheme.of(context).colorScheme.primary,
-      size: ShadButtonSize.sm,
-      onPressed: () {
+    return ListTile(
+      leading: ShadImage.square(size: 18, item.icon),
+      title: Text(item.title),
+      onTap: () {
         ref.read(_onIndexChangeProvider)(index);
+        ref.read(_indexProvider.notifier).state = index;
       },
-      icon: Icon(
-        item.icon,
-        size: 16,
-      ),
-      child: Row(
-        children: [
-          const Gap(8),
-          Text(item.title),
-        ],
-      ),
+      selected: currentIndex == index,
     );
   }
 }

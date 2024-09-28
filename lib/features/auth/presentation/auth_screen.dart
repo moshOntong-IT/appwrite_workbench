@@ -89,7 +89,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   onPressed: () async {
                     if (formKey.currentState!.saveAndValidate()) {
                       final data = formKey.currentState!.value;
-                      await ref.read(authControllerProvider).loginNotify(
+                      await ref.read(AuthController.provider).loginNotify(
                             username: data['username'] as String,
                             password: data['password'] as String,
                             onSuccess: () {

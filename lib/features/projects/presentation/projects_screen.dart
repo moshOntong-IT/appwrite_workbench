@@ -38,9 +38,9 @@ class _Main extends ConsumerWidget {
     return Scaffold(
       body: listProject.when(
         data: (value) {
-          return Center(
-            child: MaxWidthBox(
-              maxWidth: 1000,
+          return MaxWidthBox(
+            maxWidth: 1000,
+            child: Center(
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -91,7 +91,8 @@ class _Main extends ConsumerWidget {
                       ],
                     ),
                     const Gap(16),
-                    const _Tabbar(),
+                    // ! Temporarily disabled
+                    // const _Tabbar(),
                     const Divider(),
                     const Gap(16),
                     const ShadAlert(

@@ -97,12 +97,16 @@ class _OpenCLI extends ConsumerWidget {
       }
     });
     return ShadButton.outline(
+      size: ShadButtonSize.sm,
       enabled: !actionState.isLoading,
-      icon: const Icon(LucideIcons.terminal, size: 16),
+      icon: const Icon(LucideIcons.terminal, size: 14),
       child: const Row(
         children: [
           Gap(8),
-          Text('Open Terminal'),
+          Text(
+            'Open Terminal',
+            style: TextStyle(fontSize: 12),
+          ),
         ],
       ),
       onPressed: () {
@@ -137,11 +141,15 @@ class _OpenDirectory extends ConsumerWidget {
     });
     return ShadButton.outline(
       enabled: !actionState.isLoading,
-      icon: const Icon(LucideIcons.folder, size: 16),
+      size: ShadButtonSize.sm,
+      icon: const ShadImage.square(LucideIcons.folder, size: 14),
       child: const Row(
         children: [
           Gap(8),
-          Text('Reveal in Directory'),
+          Text(
+            'Reveal in Directory',
+            style: TextStyle(fontSize: 12),
+          ),
         ],
       ),
       onPressed: () {
@@ -159,14 +167,18 @@ class _SwitchProject extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ShadButton.ghost(
+      size: ShadButtonSize.sm,
       onPressed: () {
         context.router.replace(const ProjectsRoute());
       },
-      icon: const Icon(LucideIcons.arrowLeftRight, size: 16),
+      icon: const ShadImage.square(LucideIcons.arrowLeftRight, size: 14),
       child: const Row(
         children: [
           Gap(8),
-          Text('Switch Project'),
+          Text(
+            'Switch Project',
+            style: TextStyle(fontSize: 12),
+          ),
         ],
       ),
     );

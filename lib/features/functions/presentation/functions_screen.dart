@@ -2,6 +2,7 @@ import 'package:appwrite_workbench/core/provider_scope_extension.dart';
 import 'package:appwrite_workbench/features/functions/presentation/controllers/function_list_controller.dart';
 import 'package:appwrite_workbench/features/functions/presentation/widgets/function_detail_widget.dart';
 import 'package:appwrite_workbench/features/functions/presentation/widgets/functions_headbar_widget.dart';
+import 'package:appwrite_workbench/global_providars.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -53,11 +54,15 @@ class _Items extends ConsumerWidget {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                     onTap: () {
+                      final client = ref.read(appwriteClientProvider);
+                      final project = ref.read(projectSelectedProvider);
                       showShadSheet(
                         context: context,
                         side: ShadSheetSide.right,
                         builder: (context) => FunctionDetailWidget(
+                          appwriteClient: client,
                           function: function,
+                          project: project,
                         ),
                       );
                     },

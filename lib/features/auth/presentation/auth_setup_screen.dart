@@ -91,7 +91,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   onPressed: () async {
                     if (formKey.currentState!.saveAndValidate()) {
                       final data = formKey.currentState!.value;
-                      await ref.read(authControllerProvider).setupNotify(
+                      await ref.read(AuthController.provider).setupNotify(
                           username: data['username'] as String,
                           password: (data['password'] as String?) ?? 'root',
                           onError: () {

@@ -16,9 +16,9 @@ class FunctionJsonService implements FunctionService<FunctionJson> {
   @override
   Future<FunctionJson> createFunction({
     required String id,
-    required String name,
     required String runtime,
     required ProjectWorkbench project,
+    String? name,
   }) {
     // TODO: implement createFunction
     throw UnimplementedError();
@@ -34,6 +34,90 @@ class FunctionJsonService implements FunctionService<FunctionJson> {
   Stream<List<FunctionJson>> watchFunction(
       {required ProjectWorkbench project}) {
     // TODO: implement watchFunction
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> pushFunction({
+    required String id,
+    required ProjectWorkbench project,
+  }) {
+    // TODO: implement createDeployment
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<FunctionJson> getFunction(
+      {required String id, required ProjectWorkbench project}) {
+    // TODO: implement getFunction
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Variable> createVariable({
+    required String id,
+    required ProjectWorkbench project,
+    required String key,
+    required String value,
+  }) {
+    // TODO: implement createVariable
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Variable>> listVariable({
+    required String id,
+    required ProjectWorkbench project,
+  }) {
+    // TODO: implement listVariable
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Variable> updateVariable({
+    required String id,
+    required ProjectWorkbench project,
+    required String key,
+    required String value,
+  }) {
+    // TODO: implement updateVariable
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteVariable(
+      {required String id,
+      required ProjectWorkbench project,
+      required String key}) {
+    // TODO: implement deleteVariable
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> pullFunction({
+    required String id,
+    required ProjectWorkbench project,
+    bool replace = false,
+  }) {
+    // TODO: implement pullFunction
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> openVscode({
+    required FunctionJson function,
+    required ProjectWorkbench project,
+  }) {
+    // TODO: implement opeVscode
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> openDirectory({
+    required FunctionJson function,
+    required ProjectWorkbench project,
+  }) {
+    // TODO: implement openDirectory
     throw UnimplementedError();
   }
 }

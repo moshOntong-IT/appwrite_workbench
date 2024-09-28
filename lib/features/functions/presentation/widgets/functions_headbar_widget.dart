@@ -68,10 +68,17 @@ class _CreateFunction extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final project = ref.watch(projectSelectedProvider);
     return ShadButton(
-      icon: const Icon(
+      size: ShadButtonSize.sm,
+      icon: const ShadImage.square(
+        size: 16,
         LucideIcons.plus,
       ),
-      child: const Text('Create Function'),
+      child: const Text(
+        'Create Function',
+        style: TextStyle(
+          fontSize: 14,
+        ),
+      ),
       onPressed: () {
         if (project is ProjectApi) {
           showShadDialog(

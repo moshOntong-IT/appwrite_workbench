@@ -25,135 +25,139 @@ class CreateProjectWidget extends HookConsumerWidget {
     final apiKeyController = useTextEditingController();
     return MaxWidthBox(
       maxWidth: 450,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RichText(
-            text: TextSpan(
-              text: 'Link your ',
-              children: [
-                TextSpan(
-                  text: 'Appwrite Project',
-                  style: ShadTheme.of(context).textTheme.h2.copyWith(
-                        fontWeight: FontWeight.w900,
-                        color: const Color(0xFFF02D65),
-                      ),
-                ),
-                const TextSpan(text: ' to get started'),
-              ],
-              style: ShadTheme.of(context).textTheme.h2,
-            ),
-          ),
-          const Gap(16),
-          ShadInput(
-            controller: nameController,
-            placeholder: const Text('Name'),
-          ),
-          const Gap(8),
-          ShadInput(
-            controller: projectController,
-            placeholder: const Text('Project Id'),
-          ),
-          const Gap(8),
-          ShadInput(
-            controller: endpointController,
-            placeholder: const Text('Endpoint'),
-          ),
-          const Gap(8),
-          ShadInput(
-            controller: apiKeyController,
-            placeholder: const Text(
-              'Api Key',
-            ),
-          ),
-          const Gap(8),
-          const ShadAlert(
-            iconSrc: LucideIcons.terminal,
-            title: Text('API Key must have access to all features.'),
-            description: Text("Don't worry, your key will be stored securely."),
-          ),
-          const Gap(16),
-          ShadButton(
-            width: double.infinity,
-            child: const Text('Link'),
-            onPressed: () {
-              if (projectController.text.isEmpty &&
-                  endpointController.text.isEmpty &&
-                  apiKeyController.text.isEmpty &&
-                  nameController.text.isEmpty) {
-                toastification.show(
-                  title: const Text('Fields cannot be empty'),
-                  description: const Text('Please fill in all fields'),
-                  type: ToastificationType.error,
-                );
-
-                return;
-              }
-              final project = ProjectApi()
-                ..projectId = projectController.text
-                ..endpoint = endpointController.text
-                ..name = nameController.text
-                ..apiKey = apiKeyController.text;
-              onApiCreate.call(
-                project,
-              );
-            },
-          ),
-          const Gap(16),
-          const Row(
-            children: [
-              Expanded(
-                child: Divider(),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(
+              text: TextSpan(
+                text: 'Link your ',
+                children: [
+                  TextSpan(
+                    text: 'Appwrite Project',
+                    style: ShadTheme.of(context).textTheme.h2.copyWith(
+                          fontWeight: FontWeight.w900,
+                          color: const Color(0xFFF02D65),
+                        ),
+                  ),
+                  const TextSpan(text: ' to get started'),
+                ],
+                style: ShadTheme.of(context).textTheme.h2,
               ),
-              Gap(8),
-              Text('OR'),
-              Gap(8),
-              Expanded(
-                child: Divider(),
+            ),
+            const Gap(16),
+            ShadInput(
+              controller: nameController,
+              placeholder: const Text('Name'),
+            ),
+            const Gap(8),
+            ShadInput(
+              controller: projectController,
+              placeholder: const Text('Project Id'),
+            ),
+            const Gap(8),
+            ShadInput(
+              controller: endpointController,
+              placeholder: const Text('Endpoint'),
+            ),
+            const Gap(8),
+            ShadInput(
+              controller: apiKeyController,
+              placeholder: const Text(
+                'Api Key',
               ),
-            ],
-          ),
-          const Gap(16),
-          ShadButton(
-            onPressed: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles(
-                type: FileType.custom,
-                allowedExtensions: ['json'],
-              );
-
-              if (result != null) {
-                PlatformFile file = result.files.first;
-
-                if (file.name == 'appwrite.json') {
-                  final project = ProjectJson()..path = file.path!;
-                  onJsonCreate.call(project);
-                } else {
+            ),
+            const Gap(8),
+            const ShadAlert(
+              iconSrc: LucideIcons.terminal,
+              title: Text('API Key must have access to all features.'),
+              description:
+                  Text("Don't worry, your key will be stored securely."),
+            ),
+            const Gap(16),
+            ShadButton(
+              width: double.infinity,
+              child: const Text('Link'),
+              onPressed: () {
+                if (projectController.text.isEmpty &&
+                    endpointController.text.isEmpty &&
+                    apiKeyController.text.isEmpty &&
+                    nameController.text.isEmpty) {
                   toastification.show(
-                    title: const Text('Invalid file'),
-                    description: const Text(
-                      'Please select a valid Appwrite JSON file, the file must be named appwrite.json',
-                    ),
+                    title: const Text('Fields cannot be empty'),
+                    description: const Text('Please fill in all fields'),
                     type: ToastificationType.error,
                   );
+
+                  return;
                 }
-              }
-            },
-            width: double.infinity,
-            icon: const Icon(
-              LucideIcons.fileJson,
-              size: 16,
+                final project = ProjectApi()
+                  ..projectId = projectController.text
+                  ..endpoint = endpointController.text
+                  ..name = nameController.text
+                  ..apiKey = apiKeyController.text;
+                onApiCreate.call(
+                  project,
+                );
+              },
             ),
-            child: const Row(
-              children: [
-                Gap(8),
-                Text(
-                  'Appwrite Json',
-                ),
-              ],
-            ),
-          ),
-        ],
+            // ! Temporary Disabled
+            // const Gap(16),
+            // const Row(
+            //   children: [
+            //     Expanded(
+            //       child: Divider(),
+            //     ),
+            //     Gap(8),
+            //     Text('OR'),
+            //     Gap(8),
+            //     Expanded(
+            //       child: Divider(),
+            //     ),
+            //   ],
+            // ),
+            // const Gap(16),
+            // ShadButton(
+            //   onPressed: () async {
+            //     FilePickerResult? result = await FilePicker.platform.pickFiles(
+            //       type: FileType.custom,
+            //       allowedExtensions: ['json'],
+            //     );
+
+            //     if (result != null) {
+            //       PlatformFile file = result.files.first;
+
+            //       if (file.name == 'appwrite.json') {
+            //         final project = ProjectJson()..path = file.path!;
+            //         onJsonCreate.call(project);
+            //       } else {
+            //         toastification.show(
+            //           title: const Text('Invalid file'),
+            //           description: const Text(
+            //             'Please select a valid Appwrite JSON file, the file must be named appwrite.json',
+            //           ),
+            //           type: ToastificationType.error,
+            //         );
+            //       }
+            //     }
+            //   },
+            //   width: double.infinity,
+            //   icon: const Icon(
+            //     LucideIcons.fileJson,
+            //     size: 16,
+            //   ),
+            //   child: const Row(
+            //     children: [
+            //       Gap(8),
+            //       Text(
+            //         'Appwrite Json',
+            //       ),
+            //     ],
+            //   ),
+            // ),
+          ],
+        ),
       ),
     );
   }

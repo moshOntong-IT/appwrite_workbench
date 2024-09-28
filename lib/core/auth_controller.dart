@@ -9,10 +9,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final authControllerProvider =
-    ChangeNotifierProvider((ref) => AuthController(ref: ref));
-
 class AuthController extends ChangeNotifier {
+  static final provider =
+      ChangeNotifierProvider((ref) => AuthController(ref: ref));
   AuthController({required this.ref});
   final Ref ref;
 

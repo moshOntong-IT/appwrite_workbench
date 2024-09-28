@@ -49,6 +49,8 @@ class ProjectApiService implements ProjectService<ProjectApi> {
         );
       });
 
+      await _createProjectFolder(projectId: project.projectId);
+
       return project;
     } catch (e, stackTrace) {
       _logger.severe('Error creating project: $e', e, stackTrace);
@@ -137,5 +139,29 @@ class ProjectApiService implements ProjectService<ProjectApi> {
           code: AppwriteWorkbenchExceptionCode.unknown,
           stackTrace: stackTrace);
     }
+  }
+
+  Future<Directory> _createProjectFolder({required String projectId}) async {
+    _logger.info('Create project folder: $projectId');
+    final base = LocalStorageService.base;
+
+    final projectsDirectory = Directory(p.join(base, 'projects'));
+
+    if (!projectsDirectory.existsSync()) {
+      _logger.info('Creating projects directory');
+      projectsDirectory.createSync();
+      _logger.finest('Projects directory created');
+    }
+
+    final projectDirectory =
+        Directory(p.join(projectsDirectory.path, projectId));
+
+    if (!projectDirectory.existsSync()) {
+      _logger.info('Creating project directory');
+      projectDirectory.createSync();
+      _logger.finest('Project directory created');
+    }
+
+    return projectDirectory;
   }
 }

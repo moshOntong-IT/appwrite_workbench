@@ -6,6 +6,7 @@ import 'package:appwrite_workbench/models/appwrite_workbench_exception.dart';
 import 'package:appwrite_workbench/models/function.dart';
 import 'package:appwrite_workbench/models/project.dart';
 import 'package:appwrite_workbench/services/preference_service.dart';
+import 'package:dart_appwrite/dart_appwrite.dart';
 import 'package:dart_appwrite/models.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -155,6 +156,140 @@ class LocalStorageService {
           .toList();
 
       return varsConverted ?? [];
+    } else {
+      _logger.severe('Secret box is not initialized');
+      throw AppwriteWorkbenchException(
+        message: 'Secret box is not initialized',
+        code: AppwriteWorkbenchExceptionCode.notFound,
+        stackTrace: StackTrace.current,
+      );
+    }
+  }
+
+  Future<Variable> createVar({
+    required String projectId,
+    required String functionId,
+    required String key,
+    required String value,
+  }) async {
+    _logger.info('Creating var for function: $functionId');
+
+    final newVar = Variable(
+      $id: ID.unique(),
+      $createdAt: DateTime.now().toIso8601String(),
+      $updatedAt: DateTime.now().toIso8601String(),
+      key: key,
+      value: value,
+      resourceType: 'function',
+      resourceId: functionId,
+    );
+
+    assert(secretBox != null, 'Secret box is not initialized');
+
+    if (secretBox != null) {
+      _logger.info('Getting vars from secret box');
+      final vars = secretBox!.get('$projectId-$functionId-vars');
+      _logger.finest('Vars: $vars');
+      final varsConverted = (vars as List<dynamic>?)
+          ?.map((e) => Variable.fromMap(e as Map<String, dynamic>))
+          .toList();
+
+      final newVars = [...varsConverted ?? [], newVar];
+
+      await secretBox!.put('$projectId-$functionId-vars',
+          newVars.map((e) => e.toMap()).toList());
+
+      return newVar;
+    } else {
+      _logger.severe('Secret box is not initialized');
+      throw AppwriteWorkbenchException(
+        message: 'Secret box is not initialized',
+        code: AppwriteWorkbenchExceptionCode.notFound,
+        stackTrace: StackTrace.current,
+      );
+    }
+  }
+
+  Future<Variable> updateVar({
+    required String projectId,
+    required String functionId,
+    required String key,
+    required String value,
+  }) async {
+    _logger.info('Updating var for function: $functionId');
+
+    assert(secretBox != null, 'Secret box is not initialized');
+
+    if (secretBox != null) {
+      _logger.info('Getting vars from secret box');
+      final vars = secretBox!.get('$projectId-$functionId-vars');
+      _logger.finest('Vars: $vars');
+      final varsConverted = (vars as List<dynamic>?)
+          ?.map((e) => Variable.fromMap(e as Map<String, dynamic>))
+          .toList();
+
+      final newVars = varsConverted?.map((e) {
+        if (e.key == key) {
+          final variable = Variable(
+            $id: e.$id,
+            $createdAt: e.$createdAt,
+            $updatedAt: DateTime.now().toIso8601String(),
+            key: key,
+            value: value,
+            resourceType: e.resourceType,
+            resourceId: e.resourceId,
+          );
+
+          return variable;
+        }
+        return e;
+      }).toList();
+
+      if (newVars != null) {
+        await secretBox!.put('$projectId-$functionId-vars',
+            newVars.map((e) => e.toMap()).toList());
+
+        return newVars.firstWhere((element) => element.key == key);
+      }
+
+      throw AppwriteWorkbenchException(
+        message: 'Variable not found',
+        code: AppwriteWorkbenchExceptionCode.notFound,
+        stackTrace: StackTrace.current,
+      );
+    } else {
+      _logger.severe('Secret box is not initialized');
+      throw AppwriteWorkbenchException(
+        message: 'Secret box is not initialized',
+        code: AppwriteWorkbenchExceptionCode.notFound,
+        stackTrace: StackTrace.current,
+      );
+    }
+  }
+
+  Future<void> deleteVar({
+    required String projectId,
+    required String functionId,
+    required String key,
+  }) async {
+    _logger.info('Deleting var for function: $functionId');
+
+    assert(secretBox != null, 'Secret box is not initialized');
+
+    if (secretBox != null) {
+      _logger.info('Getting vars from secret box');
+      final vars = secretBox!.get('$projectId-$functionId-vars');
+      _logger.finest('Vars: $vars');
+      final varsConverted = (vars as List<dynamic>?)
+          ?.map((e) => Variable.fromMap(e as Map<String, dynamic>))
+          .toList();
+
+      final newVars = varsConverted?.where((e) => e.key != key).toList();
+
+      if (newVars != null) {
+        await secretBox!.put('$projectId-$functionId-vars',
+            newVars.map((e) => e.toMap()).toList());
+      }
     } else {
       _logger.severe('Secret box is not initialized');
       throw AppwriteWorkbenchException(
