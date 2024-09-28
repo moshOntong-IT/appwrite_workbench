@@ -4,7 +4,6 @@ import 'package:appwrite_workbench/features/projects/presentation/create_project
 import 'package:appwrite_workbench/features/projects/presentation/projects_providers.dart';
 import 'package:appwrite_workbench/models/project.dart';
 import 'package:appwrite_workbench/routers/app_router.dart';
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -78,7 +77,7 @@ class _Main extends ConsumerWidget {
                         ),
                         const Spacer(),
                         ShadButton(
-                          text: const Text('Link Project'),
+                          child: const Text('Link Project'),
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -132,11 +131,11 @@ class _Tabbar extends ConsumerWidget {
       }
     });
     return ShadTabs<ProjectType>(
-      defaultValue: ProjectType.api,
+      value: ProjectType.api,
       tabs: [
         ShadTab(
           value: ProjectType.api,
-          text: const Text('API Project'),
+          child: const Text('API Project'),
           onPressed: () {
             ref.read(projectTypeSelectedProvider.notifier).state =
                 ProjectType.api;
@@ -144,7 +143,7 @@ class _Tabbar extends ConsumerWidget {
         ),
         ShadTab(
           value: ProjectType.json,
-          text: const Text('JSON Project'),
+          child: const Text('JSON Project'),
           onPressed: () {
             ref.read(projectTypeSelectedProvider.notifier).state =
                 ProjectType.json;
@@ -246,7 +245,7 @@ class _List extends ConsumerWidget {
         ),
         footer: ShadButton(
           width: double.infinity,
-          text: const Text(
+          child: const Text(
             'Connect',
           ),
           onPressed: () {
@@ -303,7 +302,7 @@ class _List extends ConsumerWidget {
         ),
         footer: ShadButton(
           width: double.infinity,
-          text: const Text('Connect'),
+          child: const Text('Connect'),
           onPressed: () {
             context.replaceRoute(ProjectRoute(project: project));
           },

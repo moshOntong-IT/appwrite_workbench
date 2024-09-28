@@ -64,8 +64,8 @@ class _Items extends ConsumerWidget {
                     child: ShadCard(
                       title: Text(function.name),
                       description: Text(function.$id),
-                      content: const Gap(50),
                       footer: Text(function.runtime),
+                      child: const Gap(50),
                     ),
                   ),
                 );

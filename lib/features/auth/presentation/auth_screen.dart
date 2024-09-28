@@ -85,7 +85,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 const Gap(16),
                 ShadButton(
                   width: double.infinity,
-                  text: const Text('Login'),
+                  child: const Text('Login'),
                   onPressed: () async {
                     if (formKey.currentState!.saveAndValidate()) {
                       final data = formKey.currentState!.value;

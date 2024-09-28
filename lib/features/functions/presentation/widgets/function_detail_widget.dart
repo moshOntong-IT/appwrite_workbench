@@ -38,7 +38,8 @@ class FunctionDetailWidget extends ConsumerWidget {
           Text(function.name),
         ],
       ),
-      content: SizedBox(
+      description: Text(function.$id),
+      child: SizedBox(
         width: double.infinity,
         child: Column(
           children: [
@@ -51,7 +52,7 @@ class FunctionDetailWidget extends ConsumerWidget {
                       LucideIcons.arrowDownToLine,
                       size: 16,
                     ),
-                    text: const Text('Pull'),
+                    child: const Text('Pull'),
                   ),
                 ),
                 const Gap(16),
@@ -62,27 +63,27 @@ class FunctionDetailWidget extends ConsumerWidget {
                       LucideIcons.arrowUpToLine,
                       size: 16,
                     ),
-                    text: const Text('Push'),
+                    child: const Text('Push'),
                   ),
                 ),
               ],
             ),
             const Gap(8),
-            ShadButton.outline(
+            const ShadButton.outline(
               icon: Icon(
                 LucideIcons.folder,
                 size: 16,
               ),
               width: double.infinity,
-              text: Row(
+              child: Row(
                 children: [
-                  const Gap(8),
-                  const Text('Reveal in Directory'),
+                  Gap(8),
+                  Text('Reveal in Directory'),
                 ],
               ),
             ),
             const Gap(8),
-            ShadButton.outline(
+            const ShadButton.outline(
               foregroundColor: Colors.blue,
               icon: ShadImage(
                 'assets/icons/vscode.png',
@@ -90,10 +91,10 @@ class FunctionDetailWidget extends ConsumerWidget {
                 width: 16,
               ),
               width: double.infinity,
-              text: Row(
+              child: Row(
                 children: [
-                  const Gap(8),
-                  const Text('Open Vscode'),
+                  Gap(8),
+                  Text('Open Vscode'),
                 ],
               ),
             ),
@@ -102,28 +103,27 @@ class FunctionDetailWidget extends ConsumerWidget {
           ],
         ),
       ),
-      description: Text(function.$id),
     );
   }
 }
 
 class _Tabs extends ConsumerWidget {
-  const _Tabs({super.key});
+  const _Tabs();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ShadTabs<String>(
-      defaultValue: 'information',
+    return const ShadTabs<String>(
+      value: 'information',
       tabs: [
         ShadTab(
           value: 'information',
-          text: const Text('Detail'),
           content: FunctionInformationWidget(),
+          child: Text('Detail'),
         ),
         ShadTab(
           value: 'env',
-          text: const Text('Environment Variables'),
           content: FunctionEnvironmentWidget(),
+          child: Text('Environment Variables'),
         ),
       ],
     );

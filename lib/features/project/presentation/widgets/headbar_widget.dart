@@ -66,7 +66,7 @@ class _ProjectInformation extends ConsumerWidget {
           ShadTooltip(
             builder: (context) => Text((project as ProjectJson).path),
             child: const ShadBadge(
-              text: Text('JSON'),
+              child: Text('JSON'),
             ),
           ),
         ]
@@ -99,7 +99,7 @@ class _OpenCLI extends ConsumerWidget {
     return ShadButton.outline(
       enabled: !actionState.isLoading,
       icon: const Icon(LucideIcons.terminal, size: 16),
-      text: const Row(
+      child: const Row(
         children: [
           Gap(8),
           Text('Open Terminal'),
@@ -138,7 +138,7 @@ class _OpenDirectory extends ConsumerWidget {
     return ShadButton.outline(
       enabled: !actionState.isLoading,
       icon: const Icon(LucideIcons.folder, size: 16),
-      text: const Row(
+      child: const Row(
         children: [
           Gap(8),
           Text('Reveal in Directory'),
@@ -163,7 +163,7 @@ class _SwitchProject extends ConsumerWidget {
         context.router.replace(const ProjectsRoute());
       },
       icon: const Icon(LucideIcons.arrowLeftRight, size: 16),
-      text: const Row(
+      child: const Row(
         children: [
           Gap(8),
           Text('Switch Project'),

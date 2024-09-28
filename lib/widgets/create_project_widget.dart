@@ -76,7 +76,7 @@ class CreateProjectWidget extends HookConsumerWidget {
           const Gap(16),
           ShadButton(
             width: double.infinity,
-            text: const Text('Link'),
+            child: const Text('Link'),
             onPressed: () {
               if (projectController.text.isEmpty &&
                   endpointController.text.isEmpty &&
@@ -144,7 +144,7 @@ class CreateProjectWidget extends HookConsumerWidget {
               LucideIcons.fileJson,
               size: 16,
             ),
-            text: const Row(
+            child: const Row(
               children: [
                 Gap(8),
                 Text(

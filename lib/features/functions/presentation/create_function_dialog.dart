@@ -69,7 +69,7 @@ class _Main extends HookConsumerWidget {
       key: shadFormKey,
       child: ShadDialog(
         title: const Text('Create Function'),
-        content: Container(
+        child: Container(
           width: 400,
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -134,7 +134,7 @@ class _Main extends HookConsumerWidget {
               ShadButton(
                   width: double.infinity,
                   enabled: !functionState.isLoading,
-                  text: const Text('Create'),
+                  child: const Text('Create'),
                   onPressed: () {
                     if (shadFormKey.currentState!.saveAndValidate()) {
                       final data = shadFormKey.currentState!.value;

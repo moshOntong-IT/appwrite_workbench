@@ -87,7 +87,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                 const Gap(16),
                 ShadButton(
                   width: double.infinity,
-                  text: const Text('Setup'),
+                  child: const Text('Setup'),
                   onPressed: () async {
                     if (formKey.currentState!.saveAndValidate()) {
                       final data = formKey.currentState!.value;

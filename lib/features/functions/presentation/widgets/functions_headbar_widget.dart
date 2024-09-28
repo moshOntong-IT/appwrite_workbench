@@ -71,7 +71,7 @@ class _CreateFunction extends ConsumerWidget {
       icon: const Icon(
         LucideIcons.plus,
       ),
-      text: const Text('Create Function'),
+      child: const Text('Create Function'),
       onPressed: () {
         if (project is ProjectApi) {
           showShadDialog(

@@ -48,12 +48,12 @@ class ProjectDrawer extends ConsumerWidget {
               ),
             ),
           ),
-          child: Column(
+          child: const Column(
             children: [
               Expanded(
                 child: _Items(),
               ),
-              const Spacer(),
+              Spacer(),
             ],
           ),
         ),
@@ -113,7 +113,7 @@ class _Item extends ConsumerWidget {
         item.icon,
         size: 16,
       ),
-      text: Row(
+      child: Row(
         children: [
           const Gap(8),
           Text(item.title),
