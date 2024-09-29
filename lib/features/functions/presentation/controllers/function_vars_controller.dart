@@ -58,6 +58,7 @@ class FunctionVarsController extends AutoDisposeAsyncNotifier<String> {
     required void Function() onSuccess,
   }) async {
     try {
+      _validateEnvString(envString);
       state = const AsyncValue.loading();
       final functionSelected = ref.read(functionSelectedProvider);
       final projectSelected = ref.read(projectSelectedProvider);
@@ -144,6 +145,32 @@ class FunctionVarsController extends AutoDisposeAsyncNotifier<String> {
 
     // Return only the new variables, effectively removing any old variables not in the string
     return newVariablesMap.values.toList();
+  }
+
+  void _validateEnvString(String envString) {
+    final lines = envString.split('\n');
+
+    for (var line in lines) {
+      if (line.isEmpty) continue;
+
+      final parts = line.split('=');
+      if (parts.length != 2) {
+        throw FormatException('Invalid environment variable format: $line');
+      }
+
+      final key = parts[0].trim();
+
+      if (key.isEmpty) {
+        throw const FormatException(
+            'Environment variable key cannot be empty.');
+      }
+
+      final keyRegex = RegExp(r'^[a-zA-Z_][a-zA-Z0-9_]*$');
+      if (!keyRegex.hasMatch(key)) {
+        throw FormatException(
+            'Invalid key format for environment variable: $key');
+      }
+    }
   }
 
   StreamSubscription<List<Variable>>? _subscription;

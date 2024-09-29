@@ -490,13 +490,13 @@ class _AddEvent extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final event = useState('');
     return ShadDialog(
-      title: const Text('Custom permission'),
+      title: const Text('Custom Events'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Gap(16),
           ShadInputFormField(
-            label: const Text('Role'),
+            label: const Text('Event'),
             initialValue: event.value,
             onChanged: (value) => event.value = value,
             placeholder: const Text('e.g buckets.*.files.*.create'),

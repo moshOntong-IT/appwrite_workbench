@@ -101,6 +101,19 @@ class _Main extends ConsumerWidget {
               loading: () => 'Loading...',
             ),
           ),
+          const Spacer(),
+          ShadButton(
+            width: 100,
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+            icon: ShadImage.square(
+              LucideIcons.play,
+              size: 16,
+            ),
+            child: const Text(
+              'Run',
+            ),
+          )
         ],
       ),
       description: Text(
