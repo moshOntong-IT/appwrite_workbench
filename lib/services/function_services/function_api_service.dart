@@ -1128,4 +1128,61 @@ class FunctionApiService implements FunctionService<FunctionApi> {
           stackTrace: stackTrace);
     }
   }
+
+  @override
+  Stream<List<appwrite_models.Variable>> watchVariable({
+    required String id,
+    required ProjectWorkbench project,
+  }) {
+    try {
+      final effectiveProject = project as ProjectApi;
+      _logger.info('Watching variable');
+      final stream = LocalStorageService.instance.secretBox!.watch(
+        key: '${effectiveProject.projectId}-$id-vars',
+      );
+
+      return stream.map((event) {
+        final varsConverted = (event.value as List<dynamic>?)
+            ?.map((e) =>
+                appwrite_models.Variable.fromMap(e as Map<String, dynamic>))
+            .toList();
+
+        return varsConverted ?? [];
+      });
+    } catch (e, stackTrace) {
+      _logger.severe('Error watching variable: $e', e, stackTrace);
+
+      throw AppwriteWorkbenchException(
+          message: 'Error watching variable',
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: stackTrace);
+    }
+  }
+
+  @override
+  Future<List<appwrite_models.Variable>> setVariables({
+    required String id,
+    required ProjectWorkbench project,
+    required List<appwrite_models.Variable> variables,
+  }) async {
+    try {
+      final effectiveProject = project as ProjectApi;
+      _logger.info('Setting variables');
+
+      await LocalStorageService.instance.setVars(
+        projectId: effectiveProject.projectId,
+        functionId: id,
+        vars: variables,
+      );
+
+      return variables;
+    } catch (e, stackTrace) {
+      _logger.severe('Error setting variables: $e', e, stackTrace);
+
+      throw AppwriteWorkbenchException(
+          message: 'Error setting variables',
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: stackTrace);
+    }
+  }
 }

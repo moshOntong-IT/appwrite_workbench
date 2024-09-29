@@ -10,6 +10,7 @@ import 'package:appwrite_workbench/global_providars.dart';
 import 'package:appwrite_workbench/models/function.dart';
 import 'package:appwrite_workbench/models/project.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -57,7 +58,6 @@ class _Main extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final function = ref.watch(FunctionDetailController.provider);
-    final pushState = ref.watch(FunctionPushController.provider);
 
     ref.listen(FunctionDetailController.provider, (prev, next) {
       if (!next.isLoading && next.hasError) {
@@ -389,14 +389,18 @@ class _PushNotificationConfirmation extends ConsumerWidget {
   }
 }
 
-class _Tabs extends ConsumerWidget {
+class _Tabs extends HookConsumerWidget {
   const _Tabs();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final functionState = ref.watch(FunctionDetailController.provider);
+    final tabState = useState('information');
     return ShadTabs<String>(
-      value: 'information',
+      value: tabState.value,
+      onChanged: (value) {
+        tabState.value = value;
+      },
       tabs: [
         ShadTab(
           value: 'information',

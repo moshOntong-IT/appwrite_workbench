@@ -147,13 +147,26 @@ class LocalStorageService {
   }) {
     _logger.info('Getting vars for project: $projectId');
     assert(secretBox != null, 'Secret box is not initialized');
+
     if (secretBox != null) {
       _logger.info('Getting vars from secret box');
       final vars = secretBox!.get('$projectId-$functionId-vars');
       _logger.finest('Vars: $vars');
-      final varsConverted = (vars as List<dynamic>?)
-          ?.map((e) => Variable.fromMap(e as Map<String, dynamic>))
-          .toList();
+
+      final varsConverted = (vars as List<dynamic>?)?.map((e) {
+        if (e is Map) {
+          // Explicitly convert Map<dynamic, dynamic> to Map<String, String>
+          final stringMap = e.map(
+            (key, value) => MapEntry(
+              key.toString(), // Convert key to String
+              value.toString(), // Convert value to String
+            ),
+          );
+          return Variable.fromMap(stringMap);
+        } else {
+          throw FormatException("Unexpected format for variable map: $e");
+        }
+      }).toList();
 
       return varsConverted ?? [];
     } else {
@@ -191,13 +204,13 @@ class LocalStorageService {
       final vars = secretBox!.get('$projectId-$functionId-vars');
       _logger.finest('Vars: $vars');
       final varsConverted = (vars as List<dynamic>?)
-          ?.map((e) => Variable.fromMap(e as Map<String, dynamic>))
+          ?.map((e) => Variable.fromMap(e as Map<String, String>))
           .toList();
 
       final newVars = [...varsConverted ?? [], newVar];
 
       await secretBox!.put('$projectId-$functionId-vars',
-          newVars.map((e) => e.toMap()).toList());
+          newVars.map((e) => e.toMap().cast<String, String>()).toList());
 
       return newVar;
     } else {
@@ -247,7 +260,7 @@ class LocalStorageService {
 
       if (newVars != null) {
         await secretBox!.put('$projectId-$functionId-vars',
-            newVars.map((e) => e.toMap()).toList());
+            newVars.map((e) => e.toMap().cast<String, String>()).toList());
 
         return newVars.firstWhere((element) => element.key == key);
       }
@@ -306,11 +319,16 @@ class LocalStorageService {
     required List<Variable> vars,
   }) async {
     _logger.info('Setting vars for project: $projectId');
+    // secretBox!.values.toList();
     assert(secretBox != null, 'Secret box is not initialized');
     if (secretBox != null) {
       _logger.info('Setting vars in secret box');
+      final newVars =
+          vars.map((e) => e.toMap().cast<String, String>()).toList();
       await secretBox!.put(
-          '$projectId-$functionId-vars', vars.map((e) => e.toMap()).toList());
+        '$projectId-$functionId-vars',
+        newVars,
+      );
       _logger.finest('Vars set in secret box');
     } else {
       _logger.severe('Secret box is not initialized');

@@ -39,11 +39,20 @@ sealed class FunctionServiceBase<T extends FunctionWorkbench> {
     required String key,
     required String value,
   });
+  Future<List<Variable>> setVariables({
+    required String id,
+    required ProjectWorkbench project,
+    required List<Variable> variables,
+  });
   Future<Variable> updateVariable({
     required String id,
     required ProjectWorkbench project,
     required String key,
     required String value,
+  });
+  Stream<List<Variable>> watchVariable({
+    required String id,
+    required ProjectWorkbench project,
   });
 
   Future<void> deleteVariable({

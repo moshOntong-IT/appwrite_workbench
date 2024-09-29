@@ -133,4 +133,20 @@ class FunctionJsonService implements FunctionService<FunctionJson> {
     // TODO: implement updateFunction
     throw UnimplementedError();
   }
+
+  @override
+  Stream<List<Variable>> watchVariable(
+      {required String id, required ProjectWorkbench project}) {
+    // TODO: implement watchVariable
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Variable>> setVariables(
+      {required String id,
+      required ProjectWorkbench project,
+      required List<Variable> variables}) {
+    // TODO: implement setVariables
+    throw UnimplementedError();
+  }
 }

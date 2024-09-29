@@ -46,6 +46,8 @@ class _Items extends ConsumerWidget {
     final functionsState = ref.watch(functionListControllerProvider);
     return SingleChildScrollView(
       child: Wrap(
+        spacing: 20,
+        runSpacing: 20,
         children: [
           ...functionsState.when(
             data: (functions) {
