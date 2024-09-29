@@ -67,8 +67,7 @@ class FunctionApiService implements FunctionService<FunctionApi> {
       );
 
       _logger.info('Function created: ${responseData.$id}');
-      final functionsDirectory =
-          await _getFunctionsDirectory(projectId: effectiveProject.projectId);
+      final functionsDirectory = await _getFunctionsDirectory();
       final functionsDirectoryDedicated = await _getFunctionDedicateDirectory(
         functionsDir: functionsDirectory,
         functionName: responseData.$id,
@@ -213,10 +212,10 @@ class FunctionApiService implements FunctionService<FunctionApi> {
     }
   }
 
-  Future<Directory> _getFunctionsDirectory({required String projectId}) async {
+  Future<Directory> _getFunctionsDirectory() async {
     _logger.info('Getting functions directory');
     final base = LocalStorageService.base;
-    final functionsPath = path.join(base, 'projects', projectId, 'functions');
+    final functionsPath = path.join(base, 'functions');
     final directory = Directory(functionsPath);
     _logger.finest('Directory: ${directory.path}');
     if (!(await directory.exists())) {
@@ -267,7 +266,8 @@ class FunctionApiService implements FunctionService<FunctionApi> {
   }
 
   @override
-  Stream<List<FunctionApi>> watchFunction({required ProjectWorkbench project}) {
+  Stream<List<FunctionApi>> watchFunctions(
+      {required ProjectWorkbench project}) {
     return LocalStorageService.isar.functionApis.filter().projects((q) {
       return q.idEqualTo(project.id);
     }).watch();
@@ -282,9 +282,7 @@ class FunctionApiService implements FunctionService<FunctionApi> {
       _logger.info('Creating deployment');
       final effectiveProject = project as ProjectApi;
 
-      final functionsDirectory = await _getFunctionsDirectory(
-        projectId: effectiveProject.projectId,
-      );
+      final functionsDirectory = await _getFunctionsDirectory();
 
       final function = await LocalStorageService.isar.functionApis
           .filter()
@@ -352,6 +350,17 @@ class FunctionApiService implements FunctionService<FunctionApi> {
       _logger.info('Deleting temp file');
       tempFile.deleteSync();
       _logger.fine('Temp file deleted');
+
+      await _getDeploymentLoop(
+        deploymentId: response.$id,
+        functionId: function.$id,
+        onFailed: () {
+          throw AppwriteWorkbenchException(
+              message: 'Deployment failed',
+              code: AppwriteWorkbenchExceptionCode.unknown,
+              stackTrace: StackTrace.current);
+        },
+      );
 
       return response;
     } catch (e, stackTrace) {
@@ -421,6 +430,11 @@ class FunctionApiService implements FunctionService<FunctionApi> {
         }
       });
 
+      await _pullVariables(
+        function: cloudFunction,
+        project: effectiveProject,
+      );
+
       if (replace) {
         await _replaceFunction(
           function: cloudFunction,
@@ -439,15 +453,47 @@ class FunctionApiService implements FunctionService<FunctionApi> {
     }
   }
 
+  Future<void> _getDeploymentLoop({
+    required String deploymentId,
+    required String functionId,
+    required void Function() onFailed,
+  }) async {
+    try {
+      var pollChecks = 0;
+      while (true) {
+        final deployment = await client.functions.getDeployment(
+          functionId: functionId,
+          deploymentId: deploymentId,
+        );
+        if (deployment.status == 'ready') {
+          break;
+        }
+        if (deployment.status == 'failed') {
+          onFailed();
+          break;
+        }
+
+        pollChecks++;
+
+        await Future.delayed(Duration(milliseconds: pollChecks * 1000));
+      }
+    } catch (e, stackTrace) {
+      _logger.severe('Error getting deployment: $e', e, stackTrace);
+
+      throw AppwriteWorkbenchException(
+          message: 'Error getting deployment',
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: stackTrace);
+    }
+  }
+
   Future<void> _replaceFunction({
     required FunctionApi function,
     required ProjectApi project,
   }) async {
     _logger.info('Replacing function');
 
-    final functionsDirectory = await _getFunctionsDirectory(
-      projectId: project.projectId,
-    );
+    final functionsDirectory = await _getFunctionsDirectory();
 
     _logger.info('Getting the latest deployment');
     final latestDeployment = await client.functions
@@ -470,31 +516,30 @@ class FunctionApiService implements FunctionService<FunctionApi> {
       functionId: function.$id,
       deploymentId: deployment.$id,
     );
-
     final downloadedFile = File(path.join(
       functionsDirectory.path,
-      'function.tar.gz',
+      '${function.name}-pull.tar.gz',
     ));
-
-    downloadedFile.writeAsBytesSync(downloadedResponse);
-    _logger.info('Extracting downloaded deployment');
-
-    final result = await Process.run(
-      'tar',
-      [
-        '-xzf',
-        downloadedFile.path,
-        '-C',
-        functionsDirectory.path,
-      ],
+    await downloadedFile.writeAsBytes(downloadedResponse);
+    await _pullCodeFolder(
+      functionName: function.name,
+      downloadedFile: downloadedFile,
+      functionsDirectory: functionsDirectory,
     );
 
-    if (result.exitCode != 0) {
-      throw AppwriteWorkbenchException(
-          message: 'Error extracting downloaded deployment',
-          code: AppwriteWorkbenchExceptionCode.unknown,
-          stackTrace: StackTrace.current);
-    }
+    // _logger.info('Extracting downloaded deployment');
+
+    // final result = await Process.run(
+    //   'tar',
+    //   [
+    //     '-xzf',
+    //     downloadedFile.path,
+    //     '-C',
+    //     (functionsDirectory.path),
+    //   ],
+    // );
+
+    // if (result.exitCode != 0) {}
     _logger.finest('Downloaded deployment extracted');
 
     final functionDirectoryDedicated = await _getFunctionDedicateDirectory(
@@ -525,7 +570,7 @@ class FunctionApiService implements FunctionService<FunctionApi> {
     final extractedDirectory = Directory(
       path.join(
         functionsDirectory.path,
-        function.name,
+        '${function.name}-pull',
       ),
     );
 
@@ -559,6 +604,69 @@ class FunctionApiService implements FunctionService<FunctionApi> {
     downloadedFile.deleteSync();
 
     _logger.fine('Downloaded file deleted');
+  }
+
+  Future<void> _pullVariables({
+    required FunctionApi function,
+    required ProjectApi project,
+  }) async {
+    try {
+      _logger.info('Pulling variables');
+      final response = await client.functions.listVariables(
+        functionId: function.$id,
+      );
+
+      final variables = response.variables;
+
+      await LocalStorageService.instance.setVars(
+        projectId: project.projectId,
+        functionId: function.$id,
+        vars: variables,
+      );
+    } catch (e, stackTrace) {
+      _logger.severe('Error pulling variables: $e', e, stackTrace);
+
+      throw AppwriteWorkbenchException(
+          message: 'Error pulling variables',
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: stackTrace);
+    }
+  }
+
+  Future<void> _pullCodeFolder({
+    required String functionName,
+    required File downloadedFile,
+    required Directory functionsDirectory,
+  }) async {
+    _logger.info('Creating folder for pulling code...');
+    final newDirectoryPath = '${functionsDirectory.path}/$functionName-pull';
+
+    final newDirectory = Directory(newDirectoryPath);
+    if (!newDirectory.existsSync()) {
+      newDirectory.createSync(recursive: true);
+      _logger.fine('Created Folder for new code pull');
+    }
+
+    _logger.info('Extracting the downloaded code from cloud');
+    final result = await Process.run(
+      'tar',
+      [
+        '-xzf',
+        downloadedFile.path,
+        '-C',
+        newDirectoryPath,
+      ],
+    );
+
+    if (result.exitCode != 0) {
+      _logger.severe('Error extracting tarball: ${result.stderr}');
+      throw AppwriteWorkbenchException(
+          message: 'Error extracting tarball: ${result.stderr}',
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: StackTrace.current);
+    } else {
+      _logger.finest('Extraction successful');
+    }
   }
 
   Future<void> _pushVariables({
@@ -860,15 +968,11 @@ class FunctionApiService implements FunctionService<FunctionApi> {
   @override
   Future<void> openVscode({
     required FunctionApi function,
-    required ProjectWorkbench project,
   }) async {
     try {
-      final effectiveProject = project as ProjectApi;
       final base = LocalStorageService.base;
       final directory = path.join(
         base,
-        'projects',
-        effectiveProject.projectId,
         'functions',
         function.$id,
       );
@@ -945,15 +1049,11 @@ class FunctionApiService implements FunctionService<FunctionApi> {
   @override
   Future<void> openDirectory({
     required FunctionApi function,
-    required ProjectWorkbench project,
   }) async {
     try {
-      final effectiveProject = project as ProjectApi;
       final base = LocalStorageService.base;
       final directory = path.join(
         base,
-        'projects',
-        effectiveProject.projectId,
         'functions',
         function.$id,
       );
@@ -976,6 +1076,54 @@ class FunctionApiService implements FunctionService<FunctionApi> {
 
       throw AppwriteWorkbenchException(
           message: 'Error opening directory',
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: stackTrace);
+    }
+  }
+
+  @override
+  Stream<FunctionApi> watchFunction({
+    required String id,
+    required ProjectWorkbench project,
+  }) {
+    try {
+      _logger.info('Watching function');
+      final functionQuery = LocalStorageService.isar.functionApis
+          .filter()
+          .$idEqualTo(id)
+          .projects((q) {
+        return q.idEqualTo(project.id);
+      }).build();
+
+      return functionQuery.watch(fireImmediately: true).map((event) {
+        return event.first;
+      });
+    } catch (e, stackTrace) {
+      _logger.severe('Error watching function: $e', e, stackTrace);
+
+      throw AppwriteWorkbenchException(
+          message: 'Error watching function',
+          code: AppwriteWorkbenchExceptionCode.unknown,
+          stackTrace: stackTrace);
+    }
+  }
+
+  @override
+  Future<FunctionApi> updateFunction({
+    required FunctionApi function,
+  }) async {
+    try {
+      LocalStorageService.isar.writeTxn(() async {
+        function.updatedAt = DateTime.now().toUtc();
+        await LocalStorageService.isar.functionApis.put(function);
+      });
+
+      return function;
+    } catch (e, stackTrace) {
+      _logger.severe('Error updating function: $e', e, stackTrace);
+
+      throw AppwriteWorkbenchException(
+          message: 'Error updating function',
           code: AppwriteWorkbenchExceptionCode.unknown,
           stackTrace: stackTrace);
     }

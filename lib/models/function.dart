@@ -35,7 +35,7 @@ class FunctionApi extends FunctionWorkbench {
   FunctionApi() : syncedAt = DateTime.now();
 
   @Name(r'$syncedAt')
-  final DateTime syncedAt;
+  DateTime syncedAt;
 
   final projects = IsarLinks<ProjectApi>();
 
@@ -62,6 +62,59 @@ class FunctionApi extends FunctionWorkbench {
       ..providerRootDirectory = func.providerRootDirectory
       ..providerSilentMode = func.providerSilentMode
       ..ignore = getIgnores(func.$id);
+  }
+
+  // Copy with
+  FunctionApi copyWith({
+    String? $id,
+    String? name,
+    String? runtime,
+    List<String>? execute,
+    List<String>? events,
+    String? schedule,
+    int? timeout,
+    bool? enabled,
+    bool? logging,
+    String? entrypoint,
+    String? commands,
+    List<String>? ignore,
+    bool? live,
+    String? deployment,
+    List<String>? scopes,
+    String? version,
+    String? installationId,
+    String? providerRepositoryId,
+    String? providerBranch,
+    String? providerRootDirectory,
+    bool? providerSilentMode,
+  }) {
+    return FunctionApi()
+      ..id = id
+      ..$id = $id ?? this.$id
+      ..createdAt = createdAt
+      ..updatedAt = updatedAt
+      ..syncedAt = syncedAt
+      ..name = name ?? this.name
+      ..runtime = runtime ?? this.runtime
+      ..execute = execute ?? this.execute
+      ..events = events ?? this.events
+      ..schedule = schedule ?? this.schedule
+      ..timeout = timeout ?? this.timeout
+      ..enabled = enabled ?? this.enabled
+      ..logging = logging ?? this.logging
+      ..entrypoint = entrypoint ?? this.entrypoint
+      ..commands = commands ?? this.commands
+      ..ignore = ignore ?? this.ignore
+      ..live = live ?? this.live
+      ..deployment = deployment ?? this.deployment
+      ..scopes = scopes ?? this.scopes
+      ..version = version ?? this.version
+      ..installationId = installationId ?? this.installationId
+      ..providerRepositoryId = providerRepositoryId ?? this.providerRepositoryId
+      ..providerBranch = providerBranch ?? this.providerBranch
+      ..providerRootDirectory =
+          providerRootDirectory ?? this.providerRootDirectory
+      ..providerSilentMode = providerSilentMode ?? this.providerSilentMode;
   }
 }
 

@@ -6,16 +6,17 @@ import 'package:appwrite_workbench/models/project.dart';
 import 'package:appwrite_workbench/services/function_services/function_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class FunctionPushController extends AutoDisposeAsyncNotifier<void> {
+class FunctionPullController extends AutoDisposeAsyncNotifier<void> {
   static final provider =
-      AutoDisposeAsyncNotifierProvider<FunctionPushController, void>(
+      AutoDisposeAsyncNotifierProvider<FunctionPullController, void>(
           () => throw UnimplementedError());
 
   @override
   FutureOr<void> build() {}
-  Future<void> pushFunction({
+  Future<void> pullFunction({
     required FunctionWorkbench function,
     required ProjectWorkbench project,
+    bool replace = false,
     void Function()? onSuccess,
     void Function(Object error)? onError,
   }) async {
@@ -26,12 +27,13 @@ class FunctionPushController extends AutoDisposeAsyncNotifier<void> {
       if (function is FunctionApi) {
         await FunctionService<FunctionApi>(
           client: client,
-        ).pushFunction(
+        ).pullFunction(
           id: function.$id,
           project: project,
+          replace: replace,
         );
       } else if (function is FunctionJson) {
-        await FunctionService<FunctionJson>().pushFunction(
+        await FunctionService<FunctionJson>().pullFunction(
           id: function.$id,
           project: project,
         );

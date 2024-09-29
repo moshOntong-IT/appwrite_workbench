@@ -29,7 +29,7 @@ class FunctionListController
       _subscription?.cancel();
 
       _subscription = FunctionService.api(client: client)
-          .watchFunction(project: project)
+          .watchFunctions(project: project)
           .listen((event) {
         state = AsyncValue.data(event);
       });

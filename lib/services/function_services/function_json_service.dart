@@ -31,7 +31,7 @@ class FunctionJsonService implements FunctionService<FunctionJson> {
   }
 
   @override
-  Stream<List<FunctionJson>> watchFunction(
+  Stream<List<FunctionJson>> watchFunctions(
       {required ProjectWorkbench project}) {
     // TODO: implement watchFunction
     throw UnimplementedError();
@@ -106,7 +106,6 @@ class FunctionJsonService implements FunctionService<FunctionJson> {
   @override
   Future<void> openVscode({
     required FunctionJson function,
-    required ProjectWorkbench project,
   }) {
     // TODO: implement opeVscode
     throw UnimplementedError();
@@ -115,9 +114,23 @@ class FunctionJsonService implements FunctionService<FunctionJson> {
   @override
   Future<void> openDirectory({
     required FunctionJson function,
-    required ProjectWorkbench project,
   }) {
     // TODO: implement openDirectory
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<FunctionJson> watchFunction(
+      {required String id, required ProjectWorkbench project}) {
+    // TODO: implement watchFunction
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<FunctionJson> updateFunction({
+    required FunctionJson function,
+  }) {
+    // TODO: implement updateFunction
     throw UnimplementedError();
   }
 }

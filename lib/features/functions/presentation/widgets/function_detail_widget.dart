@@ -1,5 +1,8 @@
 import 'package:appwrite_workbench/core/appwrite_client.dart';
+import 'package:appwrite_workbench/features/functions/functions_provider.dart';
 import 'package:appwrite_workbench/features/functions/presentation/controllers/function_detail_actions_controller.dart';
+import 'package:appwrite_workbench/features/functions/presentation/controllers/function_detail_controller.dart';
+import 'package:appwrite_workbench/features/functions/presentation/controllers/function_pull_controller.dart';
 import 'package:appwrite_workbench/features/functions/presentation/controllers/function_push_controller.dart';
 import 'package:appwrite_workbench/features/functions/presentation/widgets/function_environment_widget.dart';
 import 'package:appwrite_workbench/features/functions/presentation/widgets/function_information_widget.dart';
@@ -11,10 +14,6 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:toastification/toastification.dart';
-
-final _functionProvider = Provider<FunctionWorkbench>(
-  (ref) => throw UnimplementedError(),
-);
 
 class FunctionDetailWidget extends ConsumerWidget {
   const FunctionDetailWidget({
@@ -34,12 +33,17 @@ class FunctionDetailWidget extends ConsumerWidget {
       overrides: [
         appwriteClientProvider.overrideWithValue(appwriteClient),
         projectSelectedProvider.overrideWithValue(project),
+        FunctionPullController.provider
+            .overrideWith(FunctionPullController.new),
         FunctionPushController.provider
             .overrideWith(FunctionPushController.new),
         FunctionDetailActionsController.provider
             .overrideWith(FunctionDetailActionsController.new),
-        _functionProvider.overrideWithValue(
-          function,
+        functionSelectedProvider.overrideWith(
+          (_) => function,
+        ),
+        FunctionDetailController.provider.overrideWith(
+          FunctionDetailController.new,
         ),
       ],
       child: const _Main(),
@@ -52,8 +56,19 @@ class _Main extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final function = ref.watch(_functionProvider);
+    final function = ref.watch(FunctionDetailController.provider);
     final pushState = ref.watch(FunctionPushController.provider);
+
+    ref.listen(FunctionDetailController.provider, (prev, next) {
+      if (!next.isLoading && next.hasError) {
+        toastification.show(
+          title: const Text('Error fetching function'),
+          description: Text(next.error.toString()),
+          autoCloseDuration: 3.seconds,
+          type: ToastificationType.error,
+        );
+      }
+    });
 
     return ShadSheet(
       closeIcon: const SizedBox.shrink(),
@@ -75,10 +90,27 @@ class _Main extends ConsumerWidget {
             ),
           ),
           const Gap(8),
-          Text(function.name),
+          Text(
+            function.when(
+              data: (data) {
+                return data.name;
+              },
+              error: (error, stackTrace) {
+                return 'Error';
+              },
+              loading: () => 'Loading...',
+            ),
+          ),
         ],
       ),
-      description: Text(function.$id),
+      description: Text(
+        function.maybeWhen(
+          data: (data) {
+            return data.$id;
+          },
+          orElse: () => '',
+        ),
+      ),
       child: SizedBox(
         width: double.infinity,
         child: Column(
@@ -87,7 +119,56 @@ class _Main extends ConsumerWidget {
               children: [
                 Expanded(
                   child: ShadButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      if (function.valueOrNull == null) {
+                        return;
+                      }
+                      final projectSelected = ref.read(projectSelectedProvider);
+                      final response = await showShadDialog<bool>(
+                          context: context,
+                          builder: (_) => const _PullConfirmation());
+                      if (response != null && context.mounted) {
+                        // Show Dialog a Loading Dialog
+                        showShadDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) {
+                              return const ShadDialog(
+                                closeIcon: SizedBox.shrink(),
+                                title: Text('Pulling Function'),
+                                description: Text(
+                                  'Please wait while we pull the function from the cloud.',
+                                ),
+                              );
+                            });
+                        ref
+                            .read(FunctionPullController.provider.notifier)
+                            .pullFunction(
+                              function: function.value!,
+                              project: projectSelected,
+                              replace: response,
+                              onSuccess: () {
+                                Navigator.of(context).pop();
+                                toastification.show(
+                                  title: const Text('Function Pulled'),
+                                  description: const Text(
+                                      'The function was pulled successfully.'),
+                                  autoCloseDuration: 3.seconds,
+                                  type: ToastificationType.success,
+                                );
+                              },
+                              onError: (message) {
+                                Navigator.of(context).pop();
+                                toastification.show(
+                                  title: const Text('Pull Failed'),
+                                  description: Text(message.toString()),
+                                  autoCloseDuration: 3.seconds,
+                                  type: ToastificationType.error,
+                                );
+                              },
+                            );
+                      }
+                    },
                     icon: const Icon(
                       LucideIcons.arrowDownToLine,
                       size: 16,
@@ -98,7 +179,6 @@ class _Main extends ConsumerWidget {
                 const Gap(16),
                 Expanded(
                   child: ShadButton(
-                    enabled: !pushState.isLoading,
                     onPressed: () async {
                       final projectSelected = ref.read(projectSelectedProvider);
                       final response = await showShadDialog<bool>(
@@ -111,18 +191,30 @@ class _Main extends ConsumerWidget {
                             context: context,
                             barrierDismissible: false,
                             builder: (_) {
-                              return const ShadDialog(
-                                closeIcon: SizedBox.shrink(),
-                                title: Text('Pushing Function'),
-                                description: Text(
-                                  'Please wait while we push the function into the cloud.',
+                              return ShadDialog(
+                                closeIcon: const SizedBox.shrink(),
+                                title: const Text('Pushing Function'),
+                                description: RichText(
+                                  text: TextSpan(
+                                    text:
+                                        'Please wait while we push the function into the cloud.',
+                                    style: DefaultTextStyle.of(context)
+                                        .style, // Use the default text style
+                                    children: const <TextSpan>[
+                                      TextSpan(
+                                        text:
+                                            ' (This may take a while depending on the size of the function.)',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             });
                         ref
                             .read(FunctionPushController.provider.notifier)
                             .pushFunction(
-                              function: function,
+                              function: function.value!,
                               project: projectSelected,
                               onSuccess: () {
                                 Navigator.of(context).pop();
@@ -161,15 +253,18 @@ class _Main extends ConsumerWidget {
                 final projectSelected = ref.read(projectSelectedProvider);
                 ref
                     .read(FunctionDetailActionsController.provider.notifier)
-                    .openDirectory(function, projectSelected,
-                        onError: (message) {
-                  toastification.show(
-                    title: const Text('Open Directory Failed'),
-                    description: Text(message.toString()),
-                    autoCloseDuration: 3.seconds,
-                    type: ToastificationType.error,
-                  );
-                });
+                    .openDirectory(
+                  function.value!,
+                  projectSelected,
+                  onError: (message) {
+                    toastification.show(
+                      title: const Text('Open Directory Failed'),
+                      description: Text(message.toString()),
+                      autoCloseDuration: 3.seconds,
+                      type: ToastificationType.error,
+                    );
+                  },
+                );
               },
               icon: const ShadImage.square(
                 LucideIcons.folder,
@@ -189,14 +284,18 @@ class _Main extends ConsumerWidget {
                 final projectSelected = ref.read(projectSelectedProvider);
                 ref
                     .read(FunctionDetailActionsController.provider.notifier)
-                    .openVscode(function, projectSelected, onError: (message) {
-                  toastification.show(
-                    title: const Text('Open Vscode Failed'),
-                    description: Text(message.toString()),
-                    autoCloseDuration: 3.seconds,
-                    type: ToastificationType.error,
-                  );
-                });
+                    .openVscode(
+                  function.value!,
+                  projectSelected,
+                  onError: (message) {
+                    toastification.show(
+                      title: const Text('Open Vscode Failed'),
+                      description: Text(message.toString()),
+                      autoCloseDuration: 3.seconds,
+                      type: ToastificationType.error,
+                    );
+                  },
+                );
               },
               foregroundColor: Colors.blue,
               icon: const ShadImage(
@@ -217,6 +316,48 @@ class _Main extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _PullConfirmation extends ConsumerWidget {
+  const _PullConfirmation();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ShadDialog.alert(
+      title: const Text('Pull Confirmation'),
+      description: RichText(
+        text: TextSpan(
+          text:
+              'Do you want to replace the existing code with the code from the cloud?',
+          style:
+              DefaultTextStyle.of(context).style, // Use the default text style
+          children: const <TextSpan>[
+            TextSpan(
+              text:
+                  ' (If you select no, the existing code will be preserved. But the metadata will be updated.)',
+              style: TextStyle(color: Colors.red),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        ShadButton.destructive(
+          child: const Text('Cancel'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        ShadButton.outline(
+          width: 100,
+          child: const Text('No'),
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+        ShadButton(
+          width: 100,
+          child: const Text('Yes'),
+          onPressed: () => Navigator.of(context).pop(true),
+        ),
+      ],
     );
   }
 }
@@ -253,18 +394,29 @@ class _Tabs extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const ShadTabs<String>(
+    final functionState = ref.watch(FunctionDetailController.provider);
+    return ShadTabs<String>(
       value: 'information',
       tabs: [
         ShadTab(
           value: 'information',
-          content: FunctionInformationWidget(),
-          child: Text('Detail'),
+          content: functionState.maybeWhen(
+            data: (data) {
+              return const FunctionInformationWidget();
+            },
+            orElse: () => const SizedBox.shrink(),
+          ),
+          child: const Text('Detail'),
         ),
         ShadTab(
           value: 'env',
-          content: FunctionEnvironmentWidget(),
-          child: Text('Environment Variables'),
+          content: functionState.maybeWhen(
+            data: (data) {
+              return const FunctionEnvironmentWidget();
+            },
+            orElse: () => const SizedBox.shrink(),
+          ),
+          child: const Text('Environment Variables'),
         ),
       ],
     );

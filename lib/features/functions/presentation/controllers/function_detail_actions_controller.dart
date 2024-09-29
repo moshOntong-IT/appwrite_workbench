@@ -24,10 +24,13 @@ class FunctionDetailActionsController extends AutoDisposeAsyncNotifier<void> {
       if (function is FunctionApi) {
         FunctionService<FunctionApi>(
           client: client,
-        ).openDirectory(function: function, project: project);
+        ).openDirectory(
+          function: function,
+        );
       } else if (function is FunctionJson) {
-        FunctionService<FunctionJson>()
-            .openDirectory(function: function, project: project);
+        FunctionService<FunctionJson>().openDirectory(
+          function: function,
+        );
       }
 
       state = const AsyncData(null);
@@ -48,10 +51,13 @@ class FunctionDetailActionsController extends AutoDisposeAsyncNotifier<void> {
       if (function is FunctionApi) {
         FunctionService<FunctionApi>(
           client: client,
-        ).openVscode(function: function, project: project);
+        ).openVscode(
+          function: function,
+        );
       } else if (function is FunctionJson) {
-        FunctionService<FunctionJson>()
-            .openVscode(function: function, project: project);
+        FunctionService<FunctionJson>().openVscode(
+          function: function,
+        );
       }
 
       state = const AsyncData(null);

@@ -13,6 +13,10 @@ sealed class FunctionServiceBase<T extends FunctionWorkbench> {
     required ProjectWorkbench project,
     String? name,
   });
+
+  Future<T> updateFunction({
+    required T function,
+  });
   Future<void> pushFunction({
     required String id,
     required ProjectWorkbench project,
@@ -49,17 +53,19 @@ sealed class FunctionServiceBase<T extends FunctionWorkbench> {
   });
   Future<void> openDirectory({
     required T function,
-    required ProjectWorkbench project,
   });
   Future<void> openVscode({
     required T function,
-    required ProjectWorkbench project,
   });
   Future<T> getFunction({
     required String id,
     required ProjectWorkbench project,
   });
-  Stream<List<T>> watchFunction({required ProjectWorkbench project});
+  Stream<T> watchFunction({
+    required String id,
+    required ProjectWorkbench project,
+  });
+  Stream<List<T>> watchFunctions({required ProjectWorkbench project});
 }
 
 abstract class FunctionService<T extends FunctionWorkbench>
